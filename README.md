@@ -49,7 +49,7 @@ All data will be returned as a JSON object. All success response codes are 200.
 }
 ```
 
-* `/{playerID}/matches` - This endpoint returns all matches involving the player with the given player ID. Matches are returned where the player was either Player 1 or Player 2. Returns an empty array if the player has not participated in any matches.
+* `/{playerID}/matches` - This endpoint returns all matches involving the player with the given player ID. Matches are returned where the player was either Player 1 or Player 2. Returns an empty array if the player has not participated in any matches. Returns status code 400 if the specified ID does not belong to any player.
 
 For example, the following might be a typical response for `/api/players/12345/matches`:
 ```json
