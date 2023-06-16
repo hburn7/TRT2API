@@ -1,0 +1,1 @@
+docker run --name trt2-postgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=trt2 -p 5432:5432 -v postgres_data:/var/lib/postgresql/data -d postgres
