@@ -22,4 +22,20 @@ public class PlayerController : ControllerBase
 		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
 		return dbQuerier.GetPlayers();
 	}
+	
+	// GET api/players/{playerID}
+	[HttpGet("{playerID}")]
+	public Player? Get(long playerID)
+	{
+		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
+		return dbQuerier.GetPlayer(playerID);
+	}
+	
+	// GET api/players/{playerID}/matches
+	[HttpGet("{playerID}/matches")]
+	public List<Match> Matches(long playerID)
+	{
+		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
+		return dbQuerier.GetMatches().Where(m => m.Player1ID == playerID || m.Player2ID == playerID).ToList();
+	}
 }
