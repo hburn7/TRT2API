@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Net;
 using TRT2API.Data;
 using TRT2API.Data.Models;
 using TRT2API.Settings;
@@ -25,10 +26,16 @@ public class PlayerController : ControllerBase
 	
 	// GET api/players/{playerID}
 	[HttpGet("{playerID}")]
-	public Player? Get(long playerID)
+	public object Get(long playerID)
 	{
 		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-		return dbQuerier.GetPlayer(playerID);
+		var res = dbQuerier.GetPlayer(playerID);
+		if (res == null)
+		{
+			return BadRequest();
+		}
+
+		return res;
 	}
 	
 	// GET api/players/{playerID}/matches
