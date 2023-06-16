@@ -37,7 +37,7 @@ public class DbQuerier
 	{
 		using (var connection = new NpgsqlConnection(_connectionString))
 		{
-			const string sql = "SELECT * FROM players WHERE player_id = @PlayerID;";
+			const string sql = "SELECT * FROM players WHERE playerid = @PlayerID;";
 			return connection.Query<Player?>(sql, new { PlayerID = playerID }).FirstOrDefault();
 		}
 	}
@@ -46,7 +46,7 @@ public class DbQuerier
 	{
 		using (var connection = new NpgsqlConnection(_connectionString))
 		{
-			const string sql = "SELECT * FROM matches WHERE match_id = @MatchID;";
+			const string sql = "SELECT * FROM matches WHERE matchid = @MatchID;";
 			return connection.Query<Match?>(sql, new { MatchID = matchID }).FirstOrDefault();
 		}
 	}
