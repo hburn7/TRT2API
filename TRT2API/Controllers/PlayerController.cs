@@ -40,9 +40,16 @@ public class PlayerController : ControllerBase
 	
 	// GET api/players/{playerID}/matches
 	[HttpGet("{playerID}/matches")]
-	public List<Match> Matches(long playerID)
+	public object Matches(long playerID)
 	{
 		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-		return dbQuerier.GetMatches().Where(m => m.Player1ID == playerID || m.Player2ID == playerID).ToList();
+		var res = dbQuerier.GetMatches().Where(m => m.Player1ID == playerID || m.Player2ID == playerID).ToList();
+
+		if (!res.Any())
+		{
+			return BadRequest();
+		}
+
+		return res;
 	}
 }
