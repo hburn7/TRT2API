@@ -6,7 +6,40 @@ Setup is straightforward.
 
 * Clone the repository: ```git clone https://github.com/hburn7/TRT2API.git && cd TRT2API```
 * Run the project via the dotnet CLI (note, CD to the folder containing the `.csproj` file): `cd TRT2API && dotnet run`
+* Configure a PostgreSQL database and update the connection string in `appsettings.json` (replace values in example appsettings.json)
+* Run the provided database scripts to create the necessary tables
 * Query an endpoint on the running port: `GET https://localhost:44395/api/players/all` for example
+
+# Database
+Import these scripts into your PostgreSQL database to create the necessary tables.
+
+```sql
+create table if not exists matches
+(
+    id        serial
+        primary key,
+    matchid   bigint not null
+        unique,
+    player1id integer
+        references players (playerid),
+    player2id integer
+        references players (playerid),
+    winnerid  integer
+        references players (playerid)
+);
+
+create table if not exists players
+(
+    id          serial
+        primary key,
+    playerid    bigint       not null
+        unique,
+    playername  varchar(255) not null,
+    totalwins   integer      not null,
+    totallosses integer      not null,
+    status      varchar(255) not null
+);
+```
 
 # Routes & Endpoints
 All data will be returned as a JSON object. All success response codes are 200.
