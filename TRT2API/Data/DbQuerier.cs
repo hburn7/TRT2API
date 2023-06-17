@@ -32,6 +32,44 @@ public class DbQuerier
 			return connection.Query<Match>(sql).ToList();
 		}
 	}
+
+	/// <summary>
+	/// Returns all matches that the player has participated in.
+	/// </summary>
+	/// <param name="playerID"></param>
+	/// <returns></returns>
+	public List<Match> GetMatches(long playerID)
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			const string sql = "SELECT *, array_to_string(player_ids, ',') AS player_ids_string FROM matches WHERE player_ids @> ARRAY[@PlayerID];";
+        
+			// Dapper doesn't know how to map PostgreSQL arrays to C#, so we have
+			// to do that ourselves.
+			var matches = connection.Query<Match, string, Match>(sql,
+				(match, player_ids_string) =>
+				{
+					if (!string.IsNullOrEmpty(player_ids_string))
+					{
+						match.PlayerIDs = player_ids_string.Split(',')
+						                                   .Where(p => !string.IsNullOrEmpty(p))
+						                                   .Select(long.Parse)
+						                                   .ToArray();
+					}
+					else
+					{
+						match.PlayerIDs = new long[0];
+					}
+
+					return match;
+				},
+				new { PlayerID = playerID },
+				splitOn: "player_ids_string");
+
+			return matches.ToList();
+		}
+	}
+
 	
 	public Player? GetPlayer(long playerID)
 	{

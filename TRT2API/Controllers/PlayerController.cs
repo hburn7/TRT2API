@@ -43,8 +43,8 @@ public class PlayerController : ControllerBase
 	public object Matches(long playerID)
 	{
 		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-		var res = dbQuerier.GetMatches().Where(m => m.Player1ID == playerID || m.Player2ID == playerID).ToList();
-
+		var res = dbQuerier.GetMatches(playerID);
+		
 		if (!res.Any())
 		{
 			return BadRequest();
