@@ -58,7 +58,7 @@ public class DbQuerier
 					}
 					else
 					{
-						match.PlayerIDs = new long[0];
+						match.PlayerIDs = Array.Empty<long>();
 					}
 
 					return match;
