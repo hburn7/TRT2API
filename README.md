@@ -16,16 +16,13 @@ Import these scripts into your PostgreSQL database to create the necessary table
 ```sql
 create table if not exists matches
 (
-    id        serial
+    id         serial
         primary key,
-    matchid   bigint not null
+    matchid    bigint
         unique,
-    player1id integer
+    winnerid   integer
         references players (playerid),
-    player2id integer
-        references players (playerid),
-    winnerid  integer
-        references players (playerid)
+    player_ids bigint[]
 );
 
 create table if not exists players
@@ -89,17 +86,12 @@ For example, the following might be a typical response for `/api/players/12345/m
 [
   {
     "id": 1,
-    "matchID": 99999,
-    "player1ID": 12345,
-    "player2ID": 123456,
-    "winnerID": 12345
-  },
-  {
-    "id": 2,
-    "matchID": 100000,
-    "player1ID": 1234567,
-    "player2ID": 12345,
-    "winnerID": 1234567
+    "matchID": 1,
+    "playerIDs": [
+      12345,
+      456
+    ],
+    "winnerID": null
   }
 ]
 ```
