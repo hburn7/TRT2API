@@ -14,27 +14,29 @@ Setup is straightforward.
 Import these scripts into your PostgreSQL database to create the necessary tables.
 
 ```sql
-create table if not exists matches
+create table matches
 (
-    id         serial
+    id        serial
         primary key,
-    matchid    bigint
+    matchid   bigint
         unique,
-    winnerid   integer
+    winnerid  integer
         references players (playerid),
-    player_ids bigint[]
+    playerids bigint[],
+    timestart date
 );
 
-create table if not exists players
+create table players
 (
-    id          serial
+    id           serial
         primary key,
-    playerid    bigint       not null
+    playerid     bigint       not null
         unique,
-    playername  varchar(255) not null,
-    totalwins   integer      not null,
-    totallosses integer      not null,
-    status      varchar(255) not null
+    playername   varchar(255) not null,
+    totalwins    integer      not null,
+    totallosses  integer      not null,
+    status       varchar(255) not null,
+    iseliminated boolean
 );
 ```
 
@@ -97,3 +99,69 @@ For example, the following might be a typical response for `/api/players/12345/m
 ```
 
 This shows that player 12345 has been involved in two matches, one where they were Player 1 and won, and another where they were Player 2 and lost.
+
+**Matches:** `/api/matches`
+* `/all` - Returns all matches in the database.
+
+```json
+[
+  {
+    "id": 1,
+    "matchID": 894152,
+    "playerIDs": [
+      12345,
+      123456
+    ],
+    "winnerID": 12345, // Represents a completed match
+    "timeStart": "2023-06-17T23:59:59"
+  },
+  {
+    "id": 2,
+    "matchID": 513551,
+    "playerIDs": [
+      12345,
+      123456
+    ],
+    "winnerID": null, // (no winner yet, players scheduled)
+    "timeStart": "2023-06-23T11:03:27" // Represents a future match
+  }
+]
+```
+
+* `/{matchID}` - Returns a single match for the given ID. Returns status code 400 if the specified ID does not belong to any match.
+
+```json
+{
+  "id": 1,
+  "matchID": 894152,
+  "playerIDs": [
+    12345,
+    123456
+  ],
+  "winnerID": 12345,
+  "timeStart": "2023-06-17T23:59:59"
+}
+```
+
+* `/{matchID}/players` - Returns all players involved in the match with the given match ID. Returns status code 400 if the specified ID does not belong to any match.
+
+```json
+[
+  {
+    "id": 1,
+    "playerID": 12345,
+    "playerName": "Stage",
+    "totalWins": 4,
+    "totalLosses": 0,
+    "status": "this is a test status"
+  },
+  {
+    "id": 2,
+    "playerID": 123456,
+    "playerName": "ROB_",
+    "totalWins": 0,
+    "totalLosses": 1,
+    "status": "get owned"
+  }
+]
+```

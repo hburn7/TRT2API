@@ -8,7 +8,5 @@ public class Player
 	public int TotalWins { get; set; }
 	public int TotalLosses { get; set; }
 	public string Status { get; set; }
+	public bool IsEliminated { get; set; }
 }
-
-
-

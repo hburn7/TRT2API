@@ -23,6 +23,18 @@ public class DbQuerier
 			return connection.Query<Player>(sql).ToList();
 		}
 	}
+
+	public List<Player> GetPlayers(int matchID)
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			const string sql = @"SELECT p.* 
+                             FROM players p 
+                             JOIN matches m ON p.playerid = ANY(m.playerids) 
+                             WHERE m.matchid = @MatchID;";
+			return connection.Query<Player>(sql, new { MatchID = matchID }).ToList();
+		}
+	}
 	
 	public List<Match> GetMatches()
 	{
@@ -42,7 +54,7 @@ public class DbQuerier
 	{
 		using (var connection = new NpgsqlConnection(_connectionString))
 		{
-			const string sql = "SELECT *, array_to_string(player_ids, ',') AS player_ids_string FROM matches WHERE player_ids @> ARRAY[@PlayerID];";
+			const string sql = "SELECT *, array_to_string(playerids, ',') AS player_ids_string FROM matches WHERE playerids @> ARRAY[@PlayerID];";
         
 			// Dapper doesn't know how to map PostgreSQL arrays to C#, so we have
 			// to do that ourselves.

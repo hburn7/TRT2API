@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Net;
 using TRT2API.Data;
 using TRT2API.Data.Models;
 using TRT2API.Settings;
