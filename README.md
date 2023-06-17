@@ -50,20 +50,22 @@ All data will be returned as a JSON object. All success response codes are 200.
 ```json
 [
   {
-    "id": 1,
-    "playerID": 12345,
-    "playerName": "Stage",
-    "totalWins": 4,
-    "totalLosses": 0,
-    "status": "this is a test status"
-  },
-  {
     "id": 2,
     "playerID": 123456,
     "playerName": "ROB_",
     "totalWins": 0,
     "totalLosses": 1,
-    "status": "get owned"
+    "status": "get owned",
+    "isEliminated": true
+  },
+  {
+    "id": 1,
+    "playerID": 12345,
+    "playerName": "Stage",
+    "totalWins": 4,
+    "totalLosses": 0,
+    "status": "this is a test status",
+    "isEliminated": false
   }
 ]
 ```
@@ -77,7 +79,8 @@ All data will be returned as a JSON object. All success response codes are 200.
   "playerName": "Stage",
   "totalWins": 4,
   "totalLosses": 0,
-  "status": "this is a test status"
+  "status": "this is a test status",
+  "isEliminated": false
 }
 ```
 
@@ -88,12 +91,23 @@ For example, the following might be a typical response for `/api/players/12345/m
 [
   {
     "id": 1,
-    "matchID": 1,
+    "matchID": 894152,
     "playerIDs": [
       12345,
-      456
+      123456
     ],
-    "winnerID": null
+    "winnerID": 12345,
+    "timeStart": "2023-06-17T23:59:59"
+  },
+  {
+    "id": 2,
+    "matchID": 513551,
+    "playerIDs": [
+      12345,
+      123456
+    ],
+    "winnerID": null,
+    "timeStart": "2023-06-23T11:03:27"
   }
 ]
 ```
