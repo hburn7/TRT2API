@@ -25,7 +25,7 @@ public class PlayerController : ControllerBase
 	}
 	
 	// GET api/players/{playerID}
-	[HttpGet("{playerID}")]
+	[HttpGet("{playerID:long}")]
 	public object Get(long playerID)
 	{
 		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
@@ -39,7 +39,7 @@ public class PlayerController : ControllerBase
 	}
 	
 	// GET api/players/{playerID}/matches
-	[HttpGet("{playerID}/matches")]
+	[HttpGet("{playerID:long}/matches")]
 	public object Matches(long playerID)
 	{
 		var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
