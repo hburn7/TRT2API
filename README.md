@@ -38,6 +38,16 @@ create table players
     status       varchar(255) not null,
     iseliminated boolean
 );
+
+create table matchlog
+(
+    id        integer generated always as identity
+        constraint id
+            primary key,
+    player_id bigint,
+    picks     bigint[],
+    bans      bigint[]
+);
 ```
 
 # Routes & Endpoints
