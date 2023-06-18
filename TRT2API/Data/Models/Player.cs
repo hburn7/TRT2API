@@ -2,11 +2,12 @@
 
 public class Player
 {
-	public int ID { get; set; }
-	public long PlayerID { get; set; }
-	public string PlayerName { get; set; }
-	public int TotalWins { get; set; }
-	public int TotalLosses { get; set; }
-	public string Status { get; set; }
-	public bool IsEliminated { get; set; }
+    public int Id { get; set; }
+    public long PlayerId { get; set; }
+    public string PlayerName { get; set; } = string.Empty;
+    public int TotalWins { get; set; }
+    public int TotalLosses { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public bool IsEliminated { get; set; }
+    public int? Seeding { get; set; }
 }
