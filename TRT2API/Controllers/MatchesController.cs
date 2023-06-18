@@ -30,7 +30,7 @@ public class MatchesController : ControllerBase
         var res = await dbQuerier.GetMatchesAsync();
         if (!res.Any())
         {
-            return BadRequest();
+            return BadRequest("No matches exist.");
         }
 
         return res;
@@ -48,7 +48,7 @@ public class MatchesController : ControllerBase
         var res = await dbQuerier.GetMatchAsync(matchID);
         if (res == null)
         {
-            return BadRequest();
+            return BadRequest("No match exists for the provided ID.");
         }
 
         return res;
@@ -67,7 +67,7 @@ public class MatchesController : ControllerBase
         
         if (!res.Any())
         {
-            return BadRequest();
+            return BadRequest("No players played in this match or the match does not exist.");
         }
 
         return res;
@@ -80,7 +80,7 @@ public class MatchesController : ControllerBase
     {
         if (matchID != match.MatchID)
         {
-            return BadRequest("The MatchID in the URL must match the MatchID in the provided data.");
+            return BadRequest("The matchID in the URL must match the matchID in the provided data.");
         }
 
         var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
