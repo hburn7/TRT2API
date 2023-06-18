@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TRT2API.Data;
+using TRT2API.Data.Models;
 using TRT2API.Settings;
 
 namespace TRT2API.Controllers;
@@ -23,10 +24,10 @@ public class MatchesController : ControllerBase
     /// </summary>
     /// <returns>List of all matches or BadRequest if none exist.</returns>
     [HttpGet("all")]
-    public object All()
+    public async Task<ActionResult<List<Match>>> All()
     {
         var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-        var res = dbQuerier.GetMatches();
+        var res = await dbQuerier.GetMatchesAsync();
         if (!res.Any())
         {
             return BadRequest();
@@ -41,10 +42,10 @@ public class MatchesController : ControllerBase
     /// <param name="matchID">ID of the match to retrieve.</param>
     /// <returns>Details of the match or BadRequest if none exist for the provided ID.</returns>
     [HttpGet("{matchID:int}")]
-    public object Get(int matchID)
+    public async Task<ActionResult<Match>> Get(int matchID)
     {
         var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-        var res = dbQuerier.GetMatch(matchID);
+        var res = await dbQuerier.GetMatchAsync(matchID);
         if (res == null)
         {
             return BadRequest();
@@ -52,17 +53,17 @@ public class MatchesController : ControllerBase
 
         return res;
     }
-    
+
     /// <summary>
     /// Returns a list of players for a specific match identified by the provided match ID. If no players exist for the match, it will return a BadRequest.
     /// </summary>
     /// <param name="matchID">ID of the match to retrieve players for.</param>
     /// <returns>List of players for the match or BadRequest if none exist.</returns>
     [HttpGet("{matchID:int}/players")]
-    public object Players(int matchID)
+    public async Task<ActionResult<List<Player>>> Players(int matchID)
     {
         var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-        var res = dbQuerier.GetPlayers(matchID);
+        var res = await dbQuerier.GetPlayersAsync(matchID);
         
         if (!res.Any())
         {
@@ -70,5 +71,26 @@ public class MatchesController : ControllerBase
         }
 
         return res;
+    }
+    
+    // === PUT ===
+    // PUT api/matches/{matchID}
+    [HttpPut("{matchID:long}")]
+    public async Task<ActionResult> Update(long matchID, [FromBody] Match match)
+    {
+        if (matchID != match.MatchID)
+        {
+            return BadRequest("The MatchID in the URL must match the MatchID in the provided data.");
+        }
+
+        var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
+        int affectedRows = await dbQuerier.UpdateMatchAsync(match);
+
+        if (affectedRows == 0)
+        {
+            return NotFound("No match found with the provided MatchID.");
+        }
+
+        return NoContent(); // HTTP 204 - success, but no content to return
     }
 }
