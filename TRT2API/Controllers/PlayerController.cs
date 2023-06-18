@@ -1,93 +1,102 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using TRT2API.Data;
 using TRT2API.Data.Models;
-using TRT2API.Settings;
-using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+// ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
 
 namespace TRT2API.Controllers
 {
     [Route("api/players")]
     public class PlayerController : ControllerBase
     {
-        private readonly DatabaseSettings _dbSettings;
+        private readonly DbQuerier _dbQuerier;
+        private readonly ILogger<PlayerController> _logger;
 
-        public PlayerController(IOptions<DatabaseSettings> dbSettings)
+        public PlayerController(DbQuerier dbQuerier, ILogger<PlayerController> logger)
         {
-            _dbSettings = dbSettings.Value;
+            _dbQuerier = dbQuerier ?? throw new ArgumentNullException(nameof(dbQuerier));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        // GET api/players/all
         [HttpGet("all")]
         public async Task<ActionResult<List<Player>>> All()
         {
-            var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-            var res = await dbQuerier.GetPlayersAsync();
-            
-            if (!res.Any())
+            var players = await _dbQuerier.GetPlayersAsync();
+            if (!players.Any())
             {
-                return BadRequest();
+                return NotFound("No players exist.");
             }
 
-            return res;
+            return players;
         }
 
-        // GET api/players/{playerID}
         [HttpGet("{playerID:long}")]
         public async Task<ActionResult<Player>> Get(long playerID)
         {
-            var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-            var res = await dbQuerier.GetPlayerAsync(playerID);
-            
-            if (res == null)
+            var player = await _dbQuerier.GetPlayerAsync(playerID);
+            if (player == null)
             {
-                return BadRequest();
+                return NotFound("No player exists for the provided ID.");
             }
 
-            return res;
+            return player;
         }
 
-        // GET api/players/{playerID}/matches
         [HttpGet("{playerID:long}/matches")]
         public async Task<ActionResult<List<Match>>> Matches(long playerID)
         {
-            var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
-            var res = await dbQuerier.GetMatchesAsync(playerID);
-            
-            if (!res.Any())
+            var matches = await _dbQuerier.GetMatchesAsync(playerID);
+            if (!matches.Any())
             {
-                return BadRequest();
+                return NotFound("No matches found for the provided playerID.");
             }
 
-            return res;
+            return matches;
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult<int>> Add([FromBody] Player player)
+        public async Task<IActionResult> Add([FromBody] Player player)
         {
-            var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
+            if (player == null)
+            {
+                return BadRequest("Provided player data is null.");
+            }
 
             try
             {
-               return await dbQuerier.AddPlayerAsync(player);
+               int playerId = await _dbQuerier.AddPlayerAsync(player);
+               return Ok(playerId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Conflict();
+                _logger.LogError(ex, "Error when adding player.");
+                return Conflict("There was a conflict when adding the player.");
             }
         }
-        
-        [HttpPost("update")]
-        public async Task<ActionResult<int>> Update([FromBody] Player player)
+
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromBody] Player player)
         {
-            var dbQuerier = new DbQuerier(_dbSettings.ConnectionString);
+            if (player == null)
+            {
+                return BadRequest("Provided player data is null.");
+            }
+
             try
             {
-                return await dbQuerier.UpdatePlayerAsync(player);
+                int affectedRows = await _dbQuerier.UpdatePlayerAsync(player);
+                if (affectedRows == 0)
+                {
+                    return NotFound("No player found with the provided PlayerID.");
+                }
+                
+                return NoContent(); // HTTP 204 - success, but no content to return
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Error when updating player.");
+                return StatusCode(500, "An error occurred while updating the player.");
             }
         }
     }

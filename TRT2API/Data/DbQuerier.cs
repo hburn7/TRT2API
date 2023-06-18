@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using TRT2API.Data.Models;
 using TRT2API.Settings;
@@ -13,9 +14,9 @@ public class DbQuerier
 	private readonly string? _connectionString;
 	private readonly ILogger<DbQuerier> _logger;
 
-	public DbQuerier(DatabaseSettings dbSettings, ILogger<DbQuerier> logger)
+	public DbQuerier(IOptions<DatabaseSettings> dbSettings, ILogger<DbQuerier> logger)
 	{
-		_connectionString = dbSettings.ConnectionString;
+		_connectionString = dbSettings.Value.ConnectionString;
 		_logger = logger;
 	}
 
