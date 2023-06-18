@@ -11,45 +11,7 @@ Setup is straightforward.
 * Query an endpoint on the running port: `GET https://localhost:44395/api/players/all` for example
 
 # Database
-Import these scripts into your PostgreSQL database to create the necessary tables.
-
-```sql
-create table matches
-(
-    id        serial
-        primary key,
-    matchid   bigint
-        unique,
-    winnerid  integer
-        references players (playerid),
-    playerids bigint[],
-    timestart timestamp,
-    updated   timestamp
-);
-
-create table players
-(
-    id           serial
-        primary key,
-    playerid     bigint       not null
-        unique,
-    playername   varchar(255) not null,
-    totalwins    integer      not null,
-    totallosses  integer      not null,
-    status       varchar(255) not null,
-    iseliminated boolean      not null
-);
-
-create table matchlog
-(
-    id        integer generated always as identity
-        constraint id
-            primary key,
-    player_id bigint,
-    picks     bigint[],
-    bans      bigint[]
-);
-```
+Run the db.sql script into your PostgreSQL instance. This will create the necessary tables for the API to function.
 
 # Routes & Endpoints
 All data will be returned as a JSON object. All success response codes are 200.
