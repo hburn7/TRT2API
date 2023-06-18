@@ -1,3 +1,4 @@
+using TRT2API.Data;
 using TRT2API.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddSingleton<DbQuerier>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
