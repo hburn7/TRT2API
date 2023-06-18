@@ -9,8 +9,8 @@ namespace TRT2API.Data;
 /// </summary>
 public class DbQuerier
 {
-	private readonly ILogger<DbQuerier> _logger;
 	private readonly string? _connectionString;
+	private readonly ILogger<DbQuerier> _logger;
 
 	public DbQuerier(string connectionString, ILogger<DbQuerier> logger)
 	{
@@ -46,6 +46,7 @@ public class DbQuerier
                                 FROM players p 
                                 JOIN match_players mp ON p.id = mp.player_id
                                 WHERE mp.match_id = @MatchID;";
+
 				var result = await connection.QueryAsync<Player>(sql, new { MatchID = matchID });
 				return result.ToList();
 			}
@@ -115,7 +116,6 @@ public class DbQuerier
 		}
 	}
 
-
 	public async Task<Match?> GetMatchAsync(int matchID)
 	{
 		using (var connection = new NpgsqlConnection(_connectionString))
@@ -145,6 +145,7 @@ public class DbQuerier
             INSERT INTO players (player_id, player_name, total_wins, total_losses, status, is_eliminated, seeding)
             VALUES (@PlayerId, @PlayerName, @TotalWins, @TotalLosses, @Status, @IsEliminated, @Seeding)
             RETURNING id;";
+
 				return await connection.QuerySingleAsync<int>(sql, new
 				{
 					player.PlayerId,
@@ -221,6 +222,134 @@ public class DbQuerier
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, $"Error updating match {match.Id}");
+				throw;
+			}
+		}
+	}
+
+	public async Task<List<Schedule>> GetSchedulesAsync()
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			try
+			{
+				const string sql = "SELECT * FROM schedule;";
+				var result = await connection.QueryAsync<Schedule>(sql);
+				return result.ToList();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error getting schedules");
+				throw;
+			}
+		}
+	}
+
+	public async Task<int> AddScheduleAsync(Schedule schedule)
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			try
+			{
+				const string sql = @"
+		INSERT INTO schedule (title, description, timestamp)
+		VALUES (@Title, @Description, @Timestamp)
+		RETURNING id;";
+
+				return await connection.ExecuteAsync(sql, new
+				{
+					schedule.Title,
+					schedule.Description,
+					schedule.Timestamp
+				});
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error adding new schedule");
+				throw;
+			}
+		}
+	}
+
+	public async Task<int> UpdateScheduleAsync(Schedule schedule)
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			try
+			{
+				const string sql = @"
+		UPDATE schedule
+		SET title = @Title, 
+			description = @Description, 
+			timestamp = @Timestamp
+		WHERE id = @Id;";
+
+				return await connection.ExecuteAsync(sql, schedule);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error updating schedule");
+				throw;
+			}
+		}
+	}
+
+	public async Task<int> AddMapAsync(Map map)
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			try
+			{
+				const string sql = @"
+		INSERT INTO maps (map_id, map_parameters)
+		VALUES (@MapId, @MapParameters)
+		RETURNING id;";
+
+				return await connection.ExecuteAsync(sql, new
+				{
+					map.MapId,
+					map.MapParameters
+				});
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error adding new map");
+				throw;
+			}
+		}
+	}
+
+	public async Task<List<Map>> GetMapsAsync()
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			try
+			{
+				const string sql = "SELECT * FROM maps;";
+				var result = await connection.QueryAsync<Map>(sql);
+				return result.ToList();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error getting maps");
+				throw;
+			}
+		}
+	}
+
+	public async Task<Map?> GetMapAsync(long mapId)
+	{
+		using (var connection = new NpgsqlConnection(_connectionString))
+		{
+			try
+			{
+				const string sql = "SELECT * FROM maps WHERE map_id = @MapId;";
+				var result = await connection.QueryFirstOrDefaultAsync<Map?>(sql, new { MapId = mapId });
+				return result;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, $"Error getting map with ID {mapId}");
 				throw;
 			}
 		}
