@@ -67,4 +67,24 @@ public class MatchesController : ControllerBase
 
 		return NoContent(); // HTTP 204 - success, but no content to return
 	}
+
+	[HttpPost("add")]
+	public async Task<IActionResult> Add([FromBody] Match match)
+	{
+		if (match == null)
+		{
+			return BadRequest("Provided match data is null.");
+		}
+		
+		try
+		{
+			await _dataWorker.Matches.AddAsync(match);
+		}
+		catch (Exception e)
+		{
+			return BadRequest("Unable to add the match. " + e.Message);
+		}
+
+		return NoContent(); // HTTP 204 - success, but no content to return
+	}
 }
