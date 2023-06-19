@@ -16,7 +16,8 @@ CREATE TABLE matches (
     time_start TIMESTAMP,
     last_updated TIMESTAMP,
     match_type VARCHAR(50), -- "main_tournament", "battle_royale", "final"
-    schedule_id INT
+    schedule_id INT,
+    bracket_match_id INT
 );
 
 CREATE TABLE match_players (
@@ -31,6 +32,10 @@ CREATE TABLE schedule (
     id SERIAL PRIMARY KEY,
     title VARCHAR(200),
     description TEXT,
+    type TEXT,
+    image TEXT,
+    priority SMALLINT,
+    link TEXT,
     timestamp TIMESTAMP
 );
 
