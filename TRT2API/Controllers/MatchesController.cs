@@ -75,7 +75,7 @@ public class MatchesController : ControllerBase
 		{
 			return BadRequest("Provided match data is null.");
 		}
-		
+
 		try
 		{
 			await _dataWorker.Matches.AddAsync(match);

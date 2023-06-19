@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace TRT2API.Data.Models;
+﻿namespace TRT2API.Data.Models;
 
 public class Map
 {
