@@ -63,7 +63,7 @@ public class MapRepository : IMapRepository
                 mod = @Mod, 
                 post_mod_sr = @PostModSr, 
                 metadata = @Metadata
-            WHERE id = @Id;";
+            WHERE map_id = @MapId;";
 
 		try
 		{
@@ -74,24 +74,24 @@ public class MapRepository : IMapRepository
 				return map;
 			}
 
-			throw new Exception($"No map found with id {map.Id} to update.");
+			throw new Exception($"No map found with mapId {map.MapId} to update.");
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error updating map {map.Id}");
+			_logger.LogError(ex, $"Error updating map {map.MapId}");
 			throw;
 		}
 	}
 
 	public async Task<Map> DeleteAsync(Map map)
 	{
-		const string sql = "DELETE FROM maps WHERE id = @Id;";
+		const string sql = "DELETE FROM maps WHERE map_id = @MapId;";
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
 			int affectedRows = await connection.ExecuteAsync(sql, new
 			{
-				map.Id
+				map.MapId
 			});
 
 			if (affectedRows > 0)
@@ -108,6 +108,7 @@ public class MapRepository : IMapRepository
 		}
 	}
 
+	// BUG: Map object does not return with mapId or postModSr set.
 	public async Task<Map> GetByMapIdAsync(long mapId)
 	{
 		const string sql = "SELECT * FROM maps WHERE map_id = @MapId";
@@ -115,7 +116,7 @@ public class MapRepository : IMapRepository
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleOrDefaultAsync<Map>(sql, new { MapId = mapId });
+			return await connection.QuerySingleAsync<Map>(sql, new { MapId = mapId });
 		}
 		catch (Exception ex)
 		{

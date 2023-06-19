@@ -7,5 +7,5 @@ public class Map
 	public string Round { get; set; } = null!;
 	public string Mod { get; set; } = null!;
 	public double PostModSr { get; set; }
-	public string Metadata { get; set; } = null!; // Consider converting to JSONB later.
+	public string? Metadata { get; set; } // Consider converting to JSONB later.
 }
