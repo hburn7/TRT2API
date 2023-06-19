@@ -1,6 +1,6 @@
 ﻿namespace TRT2API.Data.Models;
 
-public class MatchPlayers
+public class MatchPlayer
 {
 	public int Id { get; set; }
 	public long MatchId { get; set; }

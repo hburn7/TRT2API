@@ -1,4 +1,5 @@
-using TRT2API.Data;
+using TRT2API.Data.Repositories;
+using TRT2API.Data.Repositories.Interfaces;
 using TRT2API.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddSingleton<DbQuerier>();
+
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IMapRepository, MapRepository>();
+
+builder.Services.AddScoped<IDataWorker, DataWorker>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
