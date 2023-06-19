@@ -29,10 +29,10 @@ public class MatchesController : ControllerBase
 	}
 
 	[HttpGet("{matchID:int}")]
-	public async Task<ActionResult<Match>> Get(int matchID) => await _dataWorker.Matches.GetByMatchIdAsync(matchID);
+	public async Task<ActionResult<Match>> Get(long matchID) => await _dataWorker.Matches.GetByMatchIdAsync(matchID);
 
 	[HttpGet("{matchID:int}/players")]
-	public async Task<ActionResult<List<Player>>> Players(int matchID)
+	public async Task<ActionResult<List<Player>>> Players(long matchID)
 	{
 		var players = await _dataWorker.Matches.GetPlayersForMatchIdAsync(matchID);
 		if (!players.Any())
@@ -44,7 +44,7 @@ public class MatchesController : ControllerBase
 	}
 
 	[HttpPut("{matchID:int}")]
-	public async Task<IActionResult> Update(int matchID, [FromBody] Match? match)
+	public async Task<IActionResult> Update(long matchID, [FromBody] Match? match)
 	{
 		if (match == null)
 		{
