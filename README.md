@@ -28,8 +28,8 @@ All responses are provided in JSON format.
 * **Get Player Matches:** `GET /api/players/{playerID:long}/matches`
     - Returns all matches a specific player has participated in. If no matches exist for the player, a 404 error is returned.
 
-* **Add Player:** `POST /api/players`
-    - Adds a new player to the database. If the player already exists, a 409 error is returned.
+* **Add Player:** `POST /api/players/add`
+    - Adds a new player to the database. If the player already exists, a 409 error is returned. If the request is unable to be processed, a 400 error is returned.
 
 * **Update Player:** `PUT /api/players/{playerID:long}`
     - Updates an existing player's data in the database. If the player does not exist, a 404 error is returned.
@@ -39,14 +39,17 @@ All responses are provided in JSON format.
 * **Get All Matches:** `GET /api/matches/all`
     - Returns all matches in the database. If no matches exist, a 404 error is returned.
 
-* **Get Match by ID:** `GET /api/matches/{matchID:int}`
+* **Get Match by ID:** `GET /api/matches/{matchID:long}`
     - Returns a specific match by its ID. If no match exists with the provided ID, a 404 error is returned.
 
-* **Get Players in Match:** `GET /api/matches/{matchID:int}/players`
-    - Returns all players that participated in a specific match. If the match does not exist, a 404 error is returned.
+* **Get Players in Match:** `GET /api/matches/{matchID:long}/players`
+    - Returns all players that participated in a specific match. If there are no players for the match or the match could not be found, a 404 error is returned.
 
-* **Update Match:** `PUT /api/matches/{matchID:int}`
+* **Update Match:** `PUT /api/matches/{matchID:long}`
     - Updates an existing match's data in the database. If the match does not exist, a 404 error is returned.
+
+* **Add Match:** `POST /api/matches/add`
+    - Adds a new match to the database. If there is any error with adding it, a 409 error is returned.
 
 ## Schedules Endpoints
 
@@ -59,6 +62,12 @@ All responses are provided in JSON format.
 * **Update Schedule:** `PUT /api/schedules/{id:int}`
     - Updates an existing schedule's data in the database. If the schedule does not exist, a 404 error is returned.
 
+* **Delete Schedule:** `DELETE /api/schedules/{id:int}`
+    - Deletes an existing schedule from the database. If there is any error, a 500 error is returned.
+
+* **Add Schedule:** `POST /api/schedules/add`
+    - Adds a new schedule to the database. If there is any error, a 409 error is returned.
+
 ## Maps Endpoints
 
 * **Get All Maps:** `GET /api/maps/all`
@@ -69,6 +78,12 @@ All responses are provided in JSON format.
 
 * **Update Map:** `PUT /api/maps/{mapID:long}`
     - Updates an existing map's data in the database. If the map does not exist, a 404 error is returned.
+
+* **Delete Map:** `DELETE /api/maps/{mapID:long}`
+    - Deletes an existing map from the database. If the map does not exist, a 404 error is returned. If another error occurs, a 500 error is returned.
+
+* **Add Map:** `POST /api/maps/add`
+    - Adds a new map to the database. If the map already exists, a 409 error is returned.
 
 Note: successful operations return HTTP status code 200 (OK) or 204 (No Content) unless otherwise noted.
 
