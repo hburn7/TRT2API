@@ -206,7 +206,8 @@ public class DbQuerier
                     time_start = @TimeStart,
                     last_updated = @LastUpdated,
                     match_type = @Type, 
-                    schedule_id = @ScheduleId 
+                    schedule_id = @ScheduleId,
+                    bracket_match_id = @BracketMatchId
                 WHERE id = @Id";
 
 				int affectedRows = await connection.ExecuteAsync(sql, new
@@ -216,6 +217,7 @@ public class DbQuerier
 					match.TimeStart,
 					match.LastUpdated,
 					match.Type,
+					match.BracketMatchId,
 					match.ScheduleId
 				});
 
@@ -254,14 +256,18 @@ public class DbQuerier
 			try
 			{
 				const string sql = @"
-		INSERT INTO schedule (title, description, timestamp)
-		VALUES (@Title, @Description, @Timestamp)
-		RETURNING id;";
+            INSERT INTO schedule (title, description, type, image, priority, link, timestamp)
+            VALUES (@Title, @Description, @Type, @Image, @Priority, @Link, @Timestamp)
+            RETURNING id;";
 
 				return await connection.ExecuteAsync(sql, new
 				{
 					schedule.Title,
 					schedule.Description,
+					schedule.Type,
+					schedule.Image,
+					schedule.Priority,
+					schedule.Link,
 					schedule.Timestamp
 				});
 			}
@@ -280,11 +286,15 @@ public class DbQuerier
 			try
 			{
 				const string sql = @"
-		UPDATE schedule
-		SET title = @Title, 
-			description = @Description, 
-			timestamp = @Timestamp
-		WHERE id = @Id;";
+            UPDATE schedule
+            SET title = @Title, 
+                description = @Description, 
+                type = @Type,
+                image = @Image,
+                priority = @Priority,
+                link = @Link,
+                timestamp = @Timestamp
+            WHERE id = @Id;";
 
 				return await connection.ExecuteAsync(sql, schedule);
 			}
@@ -303,14 +313,17 @@ public class DbQuerier
 			try
 			{
 				const string sql = @"
-		INSERT INTO maps (map_id, map_parameters)
-		VALUES (@MapId, @MapParameters)
-		RETURNING id;";
+            INSERT INTO maps (map_id, round, mod, post_mod_sr, metadata)
+            VALUES (@MapId, @Round, @Mod, @PostModSr, @Metadata)
+            RETURNING id;";
 
 				return await connection.ExecuteAsync(sql, new
 				{
 					map.MapId,
-					map.MapParameters
+					map.Round,
+					map.Mod,
+					map.PostModSr,
+					map.Metadata
 				});
 			}
 			catch (Exception ex)
