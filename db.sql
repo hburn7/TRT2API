@@ -41,8 +41,11 @@ CREATE TABLE schedule (
 
 CREATE TABLE maps (
     id SERIAL PRIMARY KEY,
-    map_id BIGINT UNIQUE,
-    map_parameters JSONB
+    map_id BIGINT UNIQUE NOT NULL,
+    round TEXT NOT NULL,
+    mod TEXT NOT NULL,
+    post_mod_sr DOUBLE PRECISION NOT NULL,
+    metadata JSONB NOT NULL
 );
 
 CREATE TABLE match_maps (
