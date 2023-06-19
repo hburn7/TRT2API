@@ -45,7 +45,7 @@ CREATE TABLE maps (
     round TEXT NOT NULL,
     mod TEXT NOT NULL,
     post_mod_sr DOUBLE PRECISION NOT NULL,
-    metadata JSONB
+    metadata TEXT
 );
 
 CREATE TABLE match_maps (

@@ -59,7 +59,7 @@ public class MapsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error when adding map.");
-            return Conflict("There was a conflict when adding the map.");
+            return Conflict($"There was a conflict when adding the map: {ex}.");
         }
 
         return Ok(map);
@@ -85,7 +85,7 @@ public class MapsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error when updating map.");
-            return StatusCode(500, "An error occurred while updating the map.");
+            return StatusCode(500, $"An error occurred while updating the map: {ex}");
         }
 
         return NoContent(); // HTTP 204 - success, but no content to return
