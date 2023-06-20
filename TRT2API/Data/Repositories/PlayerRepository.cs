@@ -37,7 +37,7 @@ public class PlayerRepository : IPlayerRepository
 	public async Task<Player> AddAsync(Player player)
 	{
 		const string sql = @"
-            INSERT INTO players(player_id, player_name, total_wins, total_losses, status, is_eliminated, seeding)
+            INSERT INTO players(player_id, player_name, total_matches, total_wins, status, is_eliminated, seeding)
             VALUES(@PlayerId, @PlayerName, @TotalWins, @TotalLosses, @Status, @IsEliminated, @Seeding)
             RETURNING *;";
 
@@ -59,8 +59,8 @@ public class PlayerRepository : IPlayerRepository
             UPDATE players SET 
             player_id = @PlayerId, 
             player_name = @PlayerName, 
-            total_wins = @TotalWins, 
-            total_losses = @TotalLosses, 
+            total_matches = @TotalWins, 
+            total_wins = @TotalLosses, 
             status = @Status, 
             is_eliminated = @IsEliminated, 
             seeding = @Seeding 

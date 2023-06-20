@@ -4,6 +4,13 @@ using TRT2API.Data.Repositories.Interfaces;
 
 namespace TRT2API.Controllers;
 
+public class MatchData
+{
+	public Match? Match { get; set; }
+	public List<MatchPlayer> MatchPlayers { get; set; } = new();
+	public List<MatchMap> MatchMaps { get; set; } = new();
+}
+
 [Route("api/matches")]
 public class MatchesController : ControllerBase
 {
