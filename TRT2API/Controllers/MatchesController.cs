@@ -108,5 +108,20 @@ namespace TRT2API.Controllers
 
             return NoContent(); // HTTP 204 - success, but no content to return
         }
+        
+        [HttpPatch("{matchId:long}/{playerId:long}/incrementscore")]
+        public async Task<IActionResult> IncrementScore(long matchId, long playerId)
+        {
+            try
+            {
+                await _dataWorker.MatchPlayers.IncrementScoreAsync(matchId, playerId);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Unable to increment the match player's score. " + e.Message);
+            }
+
+            return NoContent(); // HTTP 204 - success, but no content to return
+        }
     }
 }
