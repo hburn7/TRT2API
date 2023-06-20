@@ -2,8 +2,8 @@ CREATE TABLE players (
     id SERIAL PRIMARY KEY,
     player_id BIGINT UNIQUE,
     player_name VARCHAR(100),
+    total_matches INT,
     total_wins INT,
-    total_losses INT,
     status VARCHAR(50),
     is_eliminated BOOLEAN,
     seeding INT
@@ -50,9 +50,9 @@ CREATE TABLE maps (
 
 CREATE TABLE match_maps (
     id SERIAL PRIMARY KEY,
-    match_id INT REFERENCES matches(id),
-    map_id INT REFERENCES maps(id),
-    player_id INT REFERENCES players(id),
-    action VARCHAR(50), -- "picked" or "banned"
-    order_in_match INT
+    match_id INT NOT NULL REFERENCES matches(id),
+    map_id INT NOT NULL REFERENCES maps(id),
+    player_id INT NOT NULL REFERENCES players(id),
+    action VARCHAR(50) NOT NULL, -- "picked" or "banned"
+    order_in_match INT NOT NULL
 );
