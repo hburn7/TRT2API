@@ -1,97 +1,112 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TRT2API.Data.Models;
 using TRT2API.Data.Repositories.Interfaces;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
-namespace TRT2API.Controllers;
-
-public class MatchData
+namespace TRT2API.Controllers
 {
-	public Match? Match { get; set; }
-	public List<MatchPlayer> MatchPlayers { get; set; } = new();
-	public List<MatchMap> MatchMaps { get; set; } = new();
-}
+    public class MatchData
+    {
+        public Match? Match { get; set; }
+        public List<MatchPlayer> MatchPlayers { get; set; } = new();
+        public List<MatchMap> MatchMaps { get; set; } = new();
+    }
 
-[Route("api/matches")]
-public class MatchesController : ControllerBase
-{
-	private readonly IDataWorker _dataWorker;
-	private readonly ILogger<MatchesController> _logger;
+    [Route("api/matches")]
+    public class MatchesController : ControllerBase
+    {
+        private readonly IDataWorker _dataWorker;
+        private readonly ILogger<MatchesController> _logger;
 
-	public MatchesController(IDataWorker dataWorker, ILogger<MatchesController> logger)
-	{
-		_dataWorker = dataWorker;
-		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-	}
+        public MatchesController(IDataWorker dataWorker, ILogger<MatchesController> logger)
+        {
+            _dataWorker = dataWorker;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
-	[HttpGet("all")]
-	public async Task<ActionResult<List<Match>>> All()
-	{
-		var matches = await _dataWorker.Matches.GetAllAsync();
-		if (!matches.Any())
-		{
-			return BadRequest("No matches exist.");
-		}
+        [HttpGet("all")]
+        public async Task<ActionResult<List<MatchData>>> All()
+        {
+            var matches = await _dataWorker.Matches.GetAllAsync();
+            if (!matches.Any())
+            {
+                return BadRequest("No matches exist.");
+            }
 
-		return matches;
-	}
+            var matchDataList = new List<MatchData>();
 
-	[HttpGet("{matchID:int}")]
-	public async Task<ActionResult<Match>> Get(long matchID) => await _dataWorker.Matches.GetByMatchIdAsync(matchID);
+            foreach(var match in matches)
+            {
+                var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(match.Id);
+                var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(match.Id);
 
-	[HttpGet("{matchID:int}/players")]
-	public async Task<ActionResult<List<Player>>> Players(long matchID)
-	{
-		var players = await _dataWorker.Matches.GetPlayersForMatchIdAsync(matchID);
-		if (!players.Any())
-		{
-			return NotFound("No players played in this match or the match does not exist.");
-		}
+                matchDataList.Add(new MatchData
+                {
+                    Match = match,
+                    MatchPlayers = matchPlayers,
+                    MatchMaps = matchMaps
+                });
+            }
 
-		return players;
-	}
+            return matchDataList;
+        }
 
-	[HttpPut("{matchID:int}")]
-	public async Task<IActionResult> Update(long matchID, [FromBody] Match? match)
-	{
-		if (match == null)
-		{
-			return BadRequest("Provided match data is null.");
-		}
+        [HttpGet("{matchID:int}")]
+        public async Task<ActionResult<MatchData>> Get(long matchID)
+        {
+            var match = await _dataWorker.Matches.GetByMatchIdAsync(matchID);
+            if(match == null)
+            {
+                return NotFound("No such match exists.");
+            }
 
-		if (matchID != match.Id)
-		{
-			return BadRequest("The matchID in the URL must match the matchID in the provided data.");
-		}
+            var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(matchID);
+            var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(matchID);
 
-		try
-		{
-			await _dataWorker.Matches.UpdateAsync(match);
-		}
-		catch (Exception e)
-		{
-			return BadRequest("Unable to update the match. " + e.Message);
-		}
+            return new MatchData
+            {
+                Match = match,
+                MatchPlayers = matchPlayers,
+                MatchMaps = matchMaps
+            };
+        }
 
-		return NoContent(); // HTTP 204 - success, but no content to return
-	}
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromBody] MatchData matchData)
+        {
+            if (matchData == null || matchData.Match == null)
+            {
+                return BadRequest("Provided match data is null.");
+            }
 
-	[HttpPost("add")]
-	public async Task<IActionResult> Add([FromBody] Match match)
-	{
-		if (match == null)
-		{
-			return BadRequest("Provided match data is null.");
-		}
+            try
+            {
+                // Add the Match
+                var addedMatch = await _dataWorker.Matches.AddAsync(matchData.Match);
 
-		try
-		{
-			await _dataWorker.Matches.AddAsync(match);
-		}
-		catch (Exception e)
-		{
-			return BadRequest("Unable to add the match. " + e.Message);
-		}
+                // Add the MatchPlayers
+                foreach (var matchPlayer in matchData.MatchPlayers)
+                {
+                    matchPlayer.MatchId = addedMatch.Id;
+                    await _dataWorker.MatchPlayers.AddAsync(matchPlayer);
+                }
 
-		return NoContent(); // HTTP 204 - success, but no content to return
-	}
+                // Add the MatchMaps
+                foreach (var matchMap in matchData.MatchMaps)
+                {
+                    matchMap.MatchId = addedMatch.Id;
+                    await _dataWorker.MatchMaps.AddAsync(matchMap);
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Unable to add the match. " + e.Message);
+            }
+
+            return NoContent(); // HTTP 204 - success, but no content to return
+        }
+    }
 }

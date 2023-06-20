@@ -18,6 +18,8 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IMapRepository, MapRepository>();
+builder.Services.AddScoped<IMatchMapRepository, MatchMapRepository>();
+builder.Services.AddScoped<IMatchPlayerRepository, MatchPlayerRepository>();
 
 builder.Services.AddScoped<IDataWorker, DataWorker>();
 

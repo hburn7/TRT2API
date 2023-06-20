@@ -6,4 +6,6 @@ public interface IDataWorker
 	IMapRepository Maps { get; }
 	IMatchRepository Matches { get; }
 	IScheduleRepository Schedules { get; }
+	IMatchMapRepository MatchMaps { get; }
+	IMatchPlayerRepository MatchPlayers { get; }
 }
