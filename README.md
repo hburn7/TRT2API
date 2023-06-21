@@ -87,3 +87,11 @@ All responses are provided in JSON format.
 
 Note: successful operations return HTTP status code 200 (OK) or 204 (No Content) unless otherwise noted.
 
+
+## Rounds Endpoints
+
+* **Get All Rounds:** `GET /api/rounds/all`
+    - Returns all rounds in the database. If no rounds exist, a 404 error is returned. If there is an error, a 500 error is returned.
+
+* **Get Round by Name:** `GET /api/rounds/{name:string}`
+    - Returns a specific round by its name. If no round exists with the provided name, a 404 error is returned. If there is an error, a 500 error is returned. A name might be `RO16` or `GF` (grand finals)

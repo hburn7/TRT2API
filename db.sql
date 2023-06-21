@@ -75,3 +75,11 @@ CREATE TABLE match_maps
     action       VARCHAR(50) NOT NULL,
     orderinmatch INTEGER     NOT NULL
 );
+
+create table rounds
+(
+    id     SERIAL
+        PRIMARY KEY,
+    name   VARCHAR(20) NOT NULL,
+    bestof INTEGER     NOT NULL
+);

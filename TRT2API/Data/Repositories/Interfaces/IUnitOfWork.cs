@@ -8,4 +8,5 @@ public interface IDataWorker
 	IScheduleRepository Schedules { get; }
 	IMatchMapRepository MatchMaps { get; }
 	IMatchPlayerRepository MatchPlayers { get; }
+	IRoundRepository Rounds { get; }
 }
