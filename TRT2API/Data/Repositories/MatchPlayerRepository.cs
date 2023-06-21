@@ -37,7 +37,7 @@ namespace TRT2API.Data.Repositories
         public async Task<MatchPlayer> AddAsync(MatchPlayer matchPlayer)
         {
             const string sql = @"
-                INSERT INTO match_players(match_id, player_id, player_score)
+                INSERT INTO match_players(matchid, playerid, playerscore)
                 VALUES(@MatchId, @PlayerId, @Score)
                 RETURNING *;";
 
@@ -57,9 +57,9 @@ namespace TRT2API.Data.Repositories
         {
             const string sql = @"
                 UPDATE match_players SET 
-                match_id = @MatchId, 
-                player_id = @PlayerId, 
-                player_score = @Score
+                matchid = @MatchId, 
+                playerid = @PlayerId, 
+                playerscore = @Score
                 WHERE id = @Id 
                 RETURNING *;";
 
@@ -93,7 +93,7 @@ namespace TRT2API.Data.Repositories
 
         public async Task<List<MatchPlayer>> GetByMatchIdAsync(long matchId)
         {
-            const string sql = "SELECT * FROM match_players WHERE match_id = @MatchId;";
+            const string sql = "SELECT * FROM match_players WHERE matchid = @MatchId;";
 
             try
             {
@@ -109,7 +109,7 @@ namespace TRT2API.Data.Repositories
 
         public async Task IncrementScoreAsync(long matchId, long playerId)
         {
-            const string sql = "UPDATE match_players SET player_score = player_score + 1 WHERE match_id = @MatchId AND player_id = @PlayerId";
+            const string sql = "UPDATE match_players SET playerscore = playerscore + 1 WHERE matchid = @MatchId AND playerid = @PlayerId";
 
             try
             {

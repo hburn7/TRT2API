@@ -37,7 +37,7 @@ public class MapRepository : IMapRepository
 	public async Task<Map> AddAsync(Map map)
 	{
 		const string sql = @"
-            INSERT INTO maps (map_id, round, mod, post_mod_sr, metadata)
+            INSERT INTO maps (mapid, round, mod, postmodsr, metadata)
             VALUES (@MapId, @Round, @Mod, @PostModSr, @Metadata)
             RETURNING id;";
 
@@ -58,12 +58,12 @@ public class MapRepository : IMapRepository
 	{
 		const string sql = @"
             UPDATE maps
-            SET map_id = @MapId, 
+            SET mapid = @MapId, 
                 round = @Round, 
                 mod = @Mod, 
-                post_mod_sr = @PostModSr, 
+                postmodsr = @PostModSr, 
                 metadata = @Metadata
-            WHERE map_id = @MapId;";
+            WHERE mapid = @MapId;";
 
 		try
 		{
@@ -85,7 +85,7 @@ public class MapRepository : IMapRepository
 
 	public async Task<Map> DeleteAsync(Map map)
 	{
-		const string sql = "DELETE FROM maps WHERE map_id = @MapId;";
+		const string sql = "DELETE FROM maps WHERE mapid = @MapId;";
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
@@ -108,10 +108,9 @@ public class MapRepository : IMapRepository
 		}
 	}
 
-	// BUG: Map object does not return with mapId or postModSr set.
 	public async Task<Map> GetByMapIdAsync(long mapId)
 	{
-		const string sql = "SELECT * FROM maps WHERE map_id = @MapId";
+		const string sql = "SELECT * FROM maps WHERE mapid = @MapId";
 
 		try
 		{

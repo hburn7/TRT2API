@@ -1,4 +1,6 @@
-﻿namespace TRT2API.Data.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace TRT2API.Data.Models;
 
 public class Map
 {

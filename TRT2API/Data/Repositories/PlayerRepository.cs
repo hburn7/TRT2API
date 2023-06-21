@@ -37,7 +37,7 @@ public class PlayerRepository : IPlayerRepository
 	public async Task<Player> AddAsync(Player player)
 	{
 		const string sql = @"
-            INSERT INTO players(player_id, player_name, total_matches, total_wins, status, is_eliminated, seeding)
+            INSERT INTO players(playerid, name, totalmatches, totalwins, status, iseliminated, seeding)
             VALUES(@PlayerId, @PlayerName, @TotalWins, @TotalLosses, @Status, @IsEliminated, @Seeding)
             RETURNING *;";
 
@@ -57,12 +57,12 @@ public class PlayerRepository : IPlayerRepository
 	{
 		const string sql = @"
             UPDATE players SET 
-            player_id = @PlayerId, 
-            player_name = @PlayerName, 
-            total_matches = @TotalWins, 
-            total_wins = @TotalLosses, 
+            playerid = @PlayerId, 
+            name = @PlayerName, 
+            totalmatches = @TotalWins, 
+            totalwins = @TotalLosses, 
             status = @Status, 
-            is_eliminated = @IsEliminated, 
+            iseliminated = @IsEliminated, 
             seeding = @Seeding 
             WHERE id = @Id 
             RETURNING *;";
@@ -97,7 +97,7 @@ public class PlayerRepository : IPlayerRepository
 
 	public async Task<Player> GetByPlayerIdAsync(long playerId)
 	{
-		const string sql = "SELECT * FROM players WHERE player_id = @PlayerId;";
+		const string sql = "SELECT * FROM players WHERE playerid = @PlayerId;";
 
 		try
 		{
@@ -116,8 +116,8 @@ public class PlayerRepository : IPlayerRepository
 		const string sql = @"
             SELECT p.*
             FROM players p
-            INNER JOIN match_players mp ON p.id = mp.player_id
-            WHERE mp.match_id = @MatchId;";
+            INNER JOIN match_players mp ON p.id = mp.playerid
+            WHERE mp.matchid = @MatchId;";
 
 		try
 		{

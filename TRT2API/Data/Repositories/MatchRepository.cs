@@ -37,7 +37,7 @@ public class MatchRepository : IMatchRepository
 	public async Task<Match> AddAsync(Match match)
 	{
 		const string sql = @"
-            INSERT INTO matches (match_id, type, schedule_id, winner_id, time_start, last_updated, bracket_match_id)
+            INSERT INTO matches (matchid, type, scheduleid, winnerid, timestart, lastupdated, bracketmatchid)
             VALUES (@MatchId, @Type, @ScheduleId, @WinnerId, @TimeStart, @LastUpdated, @BracketMatchId)
             RETURNING id;";
 
@@ -58,13 +58,13 @@ public class MatchRepository : IMatchRepository
 	{
 		const string sql = @"
             UPDATE matches
-            SET match_id = @MatchId, 
+            SET matchid = @MatchId, 
                 type = @Type, 
-                schedule_id = @ScheduleId, 
-                winner_id = @WinnerId,
-                time_start = @TimeStart, 
-                last_updated = @LastUpdated,
-                bracket_match_id = @BracketMatchId
+                scheduleid = @ScheduleId, 
+                winnerid = @WinnerId,
+                timestart = @TimeStart, 
+                lastupdated = @LastUpdated,
+                bracketmatchid = @BracketMatchId
             WHERE id = @Id;";
 
 		try
@@ -115,8 +115,8 @@ public class MatchRepository : IMatchRepository
 		const string sql = @"
         SELECT m.* 
         FROM matches m 
-        INNER JOIN match_players mp ON m.id = mp.match_id
-        WHERE mp.player_id = @PlayerId;";
+        INNER JOIN match_players mp ON m.id = mp.matchid
+        WHERE mp.playerid = @PlayerId;";
 
 		try
 		{
@@ -133,7 +133,7 @@ public class MatchRepository : IMatchRepository
 
 	public async Task<Match> GetByMatchIdAsync(long matchId)
 	{
-		const string sql = "SELECT * FROM matches WHERE match_id = @MatchId";
+		const string sql = "SELECT * FROM matches WHERE matchid = @MatchId";
 
 		try
 		{
@@ -152,8 +152,8 @@ public class MatchRepository : IMatchRepository
 		const string sql = @"
         SELECT P.* 
         FROM players P 
-        INNER JOIN match_players MP ON P.id = MP.player_id 
-        WHERE MP.match_id = @MatchId";
+        INNER JOIN match_players MP ON P.id = MP.playerid 
+        WHERE MP.matchid = @MatchId";
 
 		try
 		{

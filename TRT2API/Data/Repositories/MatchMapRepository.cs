@@ -37,7 +37,7 @@ namespace TRT2API.Data.Repositories
         public async Task<MatchMap> AddAsync(MatchMap matchMap)
         {
             const string sql = @"
-                INSERT INTO match_maps(match_id, player_id, map_id, action, order_in_match)
+                INSERT INTO match_maps(matchid, playerid, mapid, action, orderinmatch)
                 VALUES(@MatchId, @PlayerId, @MapId, @Action, @OrderInMatch)
                 RETURNING *;";
 
@@ -57,11 +57,11 @@ namespace TRT2API.Data.Repositories
         {
             const string sql = @"
                 UPDATE match_maps SET 
-                match_id = @MatchId, 
-                player_id = @PlayerId, 
-                map_id = @MapId,
+                matchid = @MatchId, 
+                playerid = @PlayerId, 
+                mapid = @MapId,
                 action = @Action,
-                order_in_match = @OrderInMatch
+                orderinmatch = @OrderInMatch
                 WHERE id = @Id 
                 RETURNING *;";
 
@@ -95,7 +95,7 @@ namespace TRT2API.Data.Repositories
 
         public async Task<List<MatchMap>> GetByMatchIdAsync(long matchId)
         {
-            const string sql = "SELECT * FROM match_maps WHERE match_id = @MatchId;";
+            const string sql = "SELECT * FROM match_maps WHERE matchid = @MatchId;";
 
             try
             {
