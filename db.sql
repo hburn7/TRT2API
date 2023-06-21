@@ -15,7 +15,7 @@ CREATE TABLE matches (
     winner_id BIGINT,
     time_start TIMESTAMP,
     last_updated TIMESTAMP,
-    match_type VARCHAR(50), -- "main_tournament", "battle_royale", "final"
+    type VARCHAR(50), -- "main_tournament", "battle_royale", "final"
     schedule_id INT,
     bracket_match_id INT
 );
