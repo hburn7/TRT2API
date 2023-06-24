@@ -6,4 +6,5 @@ public interface IPlayerRepository : IRepository<Player>
 {
 	public Task<Player> GetByPlayerIdAsync(long playerId);
 	public Task<List<Player>> GetByMatchIdAsync(long matchId);
+	public Task<Player> IncrementWinsAsync(long playerId);
 }

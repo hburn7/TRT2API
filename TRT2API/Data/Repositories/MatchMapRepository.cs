@@ -93,7 +93,7 @@ namespace TRT2API.Data.Repositories
             }
         }
 
-        public async Task<List<MatchMap>> GetByMatchIdAsync(long matchId)
+        public async Task<List<MatchMap>> GetByMatchIdAsync(int matchId)
         {
             const string sql = "SELECT * FROM match_maps WHERE matchid = @MatchId;";
 

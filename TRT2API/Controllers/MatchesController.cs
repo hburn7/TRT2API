@@ -54,17 +54,17 @@ namespace TRT2API.Controllers
             return matchDataList;
         }
 
-        [HttpGet("{matchID:int}")]
-        public async Task<ActionResult<MatchData>> Get(long matchID)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<MatchData>> Get(int id)
         {
-            var match = await _dataWorker.Matches.GetByMatchIdAsync(matchID);
+            var match = await _dataWorker.Matches.GetAsync(id);
             if(match == null)
             {
                 return NotFound("No such match exists.");
             }
 
-            var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(matchID);
-            var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(matchID);
+            var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(id);
+            var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(id);
 
             return new MatchData
             {

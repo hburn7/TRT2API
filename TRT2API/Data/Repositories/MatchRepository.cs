@@ -167,4 +167,19 @@ public class MatchRepository : IMatchRepository
 			throw;
 		}
 	}
+
+	public Task<Match?> GetAsync(int id)
+	{
+		const string sql = "SELECT * FROM matches WHERE id = @Id";
+		try
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			return connection.QuerySingleAsync<Match?>(sql, new { Id = id });
+		}
+		catch (Exception e)
+		{
+			_logger.LogError(e, $"Error getting match with id {id}");
+			return Task.FromException<Match?>(e);
+		}
+	}
 }

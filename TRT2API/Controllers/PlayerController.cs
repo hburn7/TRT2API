@@ -96,5 +96,20 @@ namespace TRT2API.Controllers
 				return StatusCode(500, "An error occurred while updating the player.");
 			}
 		}
+		
+		[HttpPut("{playerID:long}/incrementwins")]
+		public async Task<IActionResult> AddWin(long playerID)
+		{
+			try
+			{
+				await _dataWorker.Players.IncrementWinsAsync(playerID);
+				return NoContent(); // HTTP 204 - success, but no content to return
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error when updating player (increment wins).");
+				return StatusCode(500, "An error occurred while updating the player.");
+			}
+		}
 	}
 }

@@ -131,4 +131,24 @@ public class PlayerRepository : IPlayerRepository
 			throw;
 		}
 	}
+
+	public async Task<Player> IncrementWinsAsync(long playerId)
+	{
+		const string sql = @"
+			UPDATE players SET 
+			totalwins = totalwins + 1
+			WHERE playerid = @PlayerId
+			RETURNING *;";
+
+		try
+		{
+			using var connection = new NpgsqlConnection(_connectionString);
+			return await connection.QuerySingleAsync<Player>(sql, new { PlayerId = playerId });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, $"Error incrementing wins for player {playerId}");
+			throw;
+		}
+	}
 }

@@ -4,5 +4,5 @@ namespace TRT2API.Data.Repositories.Interfaces;
 
 public interface IMatchPlayerRepository : IRepository<MatchPlayer>
 {
-		Task<List<MatchPlayer>> GetByMatchIdAsync(long matchId);
+		Task<List<MatchPlayer>> GetByMatchIdAsync(int matchId);
 }
