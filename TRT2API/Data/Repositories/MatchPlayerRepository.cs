@@ -106,21 +106,5 @@ namespace TRT2API.Data.Repositories
                 throw;
             }
         }
-
-        public async Task IncrementScoreAsync(long matchId, long playerId)
-        {
-            const string sql = "UPDATE match_players SET playerscore = playerscore + 1 WHERE matchid = @MatchId AND playerid = @PlayerId";
-
-            try
-            {
-                using var connection = new NpgsqlConnection(_connectionString);
-                await connection.ExecuteAsync(sql, new { MatchId = matchId, PlayerId = playerId });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error incrementing score for match {matchId} and player {playerId}");
-                throw;
-            }
-        }
     }
 }
