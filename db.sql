@@ -33,7 +33,7 @@ CREATE TABLE match_players
         REFERENCES matches,
     playerid    INTEGER
         REFERENCES players,
-    playerscore INTEGER,
+    score INTEGER,
     iswinner    BOOLEAN
 );
 

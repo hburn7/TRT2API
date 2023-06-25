@@ -53,21 +53,29 @@ namespace TRT2API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MatchData>> Get(int id)
         {
-            var match = await _dataWorker.Matches.GetAsync(id);
-            if(match == null)
+            try
             {
-                return NotFound("No such match exists.");
+                var match = await _dataWorker.Matches.GetAsync(id);
+                if(match == null)
+                {
+                    return NotFound("No such match exists.");
+                }
+
+                var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(id);
+                var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(id);
+
+                return new MatchData
+                {
+                    Match = match,
+                    MatchPlayers = matchPlayers,
+                    MatchMaps = matchMaps
+                };
             }
-
-            var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(id);
-            var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(id);
-
-            return new MatchData
+            catch (Exception e)
             {
-                Match = match,
-                MatchPlayers = matchPlayers,
-                MatchMaps = matchMaps
-            };
+                _logger.LogError(e, "Error getting match by id");
+                return NotFound("Match not found or error occurred.");
+            }
         }
         
         [HttpGet("osumatch/{osuMatchId:long}")]

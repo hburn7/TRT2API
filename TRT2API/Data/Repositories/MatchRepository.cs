@@ -37,8 +37,8 @@ public class MatchRepository : IMatchRepository
 	public async Task<Match> AddAsync(Match match)
 	{
 		const string sql = @"
-            INSERT INTO matches (matchid, type, scheduleid, winnerid, timestart, lastupdated, bracketmatchid)
-            VALUES (@MatchId, @Type, @ScheduleId, @WinnerId, @TimeStart, @LastUpdated, @BracketMatchId)
+            INSERT INTO matches (osumatchid, type, scheduleid, winnerid, timestart, lastupdated, bracketmatchid)
+            VALUES (@OsuMatchId, @Type, @ScheduleId, @WinnerId, @TimeStart, @LastUpdated, @BracketMatchId)
             RETURNING id;";
 
 		try
@@ -58,7 +58,7 @@ public class MatchRepository : IMatchRepository
 	{
 		const string sql = @"
             UPDATE matches
-            SET matchid = @MatchId, 
+            SET osumatchid = @OsuMatchId, 
                 type = @Type, 
                 scheduleid = @ScheduleId, 
                 winnerid = @WinnerId,
@@ -133,16 +133,16 @@ public class MatchRepository : IMatchRepository
 
 	public async Task<Match> GetByOsuMatchIdAsync(long matchId)
 	{
-		const string sql = "SELECT * FROM matches WHERE matchid = @MatchId";
+		const string sql = "SELECT * FROM matches WHERE osumatchid = @OsuMatchId";
 
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleOrDefaultAsync<Match>(sql, new { MatchId = matchId });
+			return await connection.QuerySingleOrDefaultAsync<Match>(sql, new { OsuMatchId = matchId });
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error getting match with id {matchId}");
+			_logger.LogError(ex, $"Error getting match with osumatchid {matchId}");
 			throw;
 		}
 	}

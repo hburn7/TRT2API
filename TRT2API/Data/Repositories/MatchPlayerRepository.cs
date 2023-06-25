@@ -37,7 +37,7 @@ namespace TRT2API.Data.Repositories
         public async Task<MatchPlayer> AddAsync(MatchPlayer matchPlayer)
         {
             const string sql = @"
-                INSERT INTO match_players(matchid, playerid, playerscore)
+                INSERT INTO match_players(matchid, playerid, score)
                 VALUES(@MatchId, @PlayerId, @Score)
                 RETURNING *;";
 
@@ -59,7 +59,7 @@ namespace TRT2API.Data.Repositories
                 UPDATE match_players SET 
                 matchid = @MatchId, 
                 playerid = @PlayerId, 
-                playerscore = @Score
+                score = @Score
                 WHERE id = @Id 
                 RETURNING *;";
 

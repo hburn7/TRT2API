@@ -80,8 +80,8 @@ public class MapsController : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "Error when updating map.");
-			return StatusCode(500, $"An error occurred while updating the map: {ex}");
+			_logger.LogError(ex, "Error when updating map");
+			return BadRequest($"The map you are trying to update does not exist or an error occured: {ex.Message}");
 		}
 
 		return NoContent(); // HTTP 204 - success, but no content to return
@@ -90,19 +90,19 @@ public class MapsController : ControllerBase
 	[HttpDelete("{osuMapId:long}")]
 	public async Task<IActionResult> Delete(long osuMapId)
 	{
-		var map = await _dataWorker.Maps.GetByOsuMapIdAsync(osuMapId);
-		if (map == null)
-		{
-			return NotFound("No map exists with the provided mapId.");
-		}
-
 		try
 		{
+			var map = await _dataWorker.Maps.GetByOsuMapIdAsync(osuMapId);
+			if (map == null)
+			{
+				return NotFound("No map exists with the provided mapId.");
+			}
+			
 			await _dataWorker.Maps.DeleteAsync(osuMapId);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "Error when deleting map.");
+			_logger.LogError(ex, $"Error when deleting map with osuMapId {osuMapId}");
 			return StatusCode(500, "An error occurred while deleting the map.");
 		}
 

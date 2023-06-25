@@ -56,7 +56,7 @@ public class MapRepository : IMapRepository
 		}
 	}
 
-	public async Task<Map> UpdateAsync(Map map)
+	public async Task<Map?> UpdateAsync(Map map)
 	{
 		const string sql = @"
             UPDATE maps
@@ -81,7 +81,7 @@ public class MapRepository : IMapRepository
 		catch (Exception ex)
 		{
 			_logger.LogError(ex, $"Error updating map {map.OsuMapId}");
-			throw;
+			return null;
 		}
 	}
 
@@ -110,7 +110,7 @@ public class MapRepository : IMapRepository
 		}
 	}
 
-	public async Task<Map> GetByOsuMapIdAsync(long osuMapId)
+	public async Task<Map?> GetByOsuMapIdAsync(long osuMapId)
 	{
 		const string sql = "SELECT * FROM maps WHERE osumapid = @OsuMapId";
 
@@ -122,7 +122,7 @@ public class MapRepository : IMapRepository
 		catch (Exception ex)
 		{
 			_logger.LogError(ex, $"Error getting map with id {osuMapId}");
-			throw;
+			return null;
 		}
 	}
 }
