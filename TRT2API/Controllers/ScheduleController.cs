@@ -85,18 +85,18 @@ public class ScheduleController : ControllerBase
 		}
 	}
 
-	[HttpDelete("{scheduleID:int}")]
-	public async Task<IActionResult> Delete(int scheduleID)
+	[HttpDelete("{scheduleId:int}")]
+	public async Task<IActionResult> Delete(int scheduleId)
 	{
 		try
 		{
-			var scheduleToDelete = await _dataWorker.Schedules.GetByIdAsync(scheduleID);
+			var scheduleToDelete = await _dataWorker.Schedules.GetByIdAsync(scheduleId);
 			if (scheduleToDelete == null)
 			{
-				return NotFound($"No schedule exists for the provided ID: {scheduleID}.");
+				return NotFound($"No schedule exists for the provided ID: {scheduleId}.");
 			}
 
-			await _dataWorker.Schedules.DeleteAsync(scheduleToDelete);
+			await _dataWorker.Schedules.DeleteAsync(scheduleId);
 			return NoContent(); // HTTP 204 - success, but no content to return
 		}
 		catch (Exception ex)

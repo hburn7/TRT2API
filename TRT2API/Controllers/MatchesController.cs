@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TRT2API.Data.Models;
 using TRT2API.Data.Repositories.Interfaces;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System;
 
 namespace TRT2API.Controllers
 {
@@ -65,6 +61,26 @@ namespace TRT2API.Controllers
 
             var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(id);
             var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(id);
+
+            return new MatchData
+            {
+                Match = match,
+                MatchPlayers = matchPlayers,
+                MatchMaps = matchMaps
+            };
+        }
+        
+        [HttpGet("osumatch/{osuMatchId:long}")]
+        public async Task<ActionResult<MatchData>> GetByOsuMatchId(long osuMatchId)
+        {
+            var match = await _dataWorker.Matches.GetByOsuMatchIdAsync(osuMatchId);
+            if(match == null)
+            {
+                return NotFound("No such match exists.");
+            }
+
+            var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(match.Id);
+            var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(match.Id);
 
             return new MatchData
             {

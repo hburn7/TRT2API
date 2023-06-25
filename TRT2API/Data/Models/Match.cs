@@ -3,7 +3,7 @@
 public class Match
 {
 	public int Id { get; set; }
-	public long? MatchId { get; set; }
+	public long? OsuMatchId { get; set; }
 	public string Type { get; set; } = string.Empty;
 	public int ScheduleId { get; set; }
 	public long? WinnerId { get; set; }

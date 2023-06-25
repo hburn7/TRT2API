@@ -28,10 +28,10 @@ namespace TRT2API.Controllers
 			return players;
 		}
 
-		[HttpGet("{playerID:long}")]
-		public async Task<ActionResult<Player>> Get(long playerID)
+		[HttpGet("{osuPlayerId:long}")]
+		public async Task<ActionResult<Player>> Get(long osuPlayerId)
 		{
-			var player = await _dataWorker.Players.GetByPlayerIdAsync(playerID);
+			var player = await _dataWorker.Players.GetByPlayerIdAsync(osuPlayerId);
 			if (player == null)
 			{
 				return NotFound("No player exists for the provided ID.");
@@ -40,10 +40,10 @@ namespace TRT2API.Controllers
 			return player;
 		}
 
-		[HttpGet("{playerID:long}/matches")]
-		public async Task<ActionResult<List<Match>>> Matches(long playerID)
+		[HttpGet("{osuPlayerId:long}/matches")]
+		public async Task<ActionResult<List<Match>>> Matches(long osuPlayerId)
 		{
-			var matches = await _dataWorker.Matches.GetByPlayerIdAsync(playerID);
+			var matches = await _dataWorker.Matches.GetByPlayerIdAsync(osuPlayerId);
 			if (!matches.Any())
 			{
 				return NotFound("No matches found for the provided playerID.");
@@ -63,7 +63,7 @@ namespace TRT2API.Controllers
 			try
 			{
 				var addedPlayer = await _dataWorker.Players.AddAsync(player);
-				return Ok(addedPlayer.PlayerId);
+				return Ok(addedPlayer.OsuPlayerId);
 			}
 			catch (Exception ex)
 			{
@@ -72,15 +72,15 @@ namespace TRT2API.Controllers
 			}
 		}
 
-		[HttpPut("{playerID:long}")]
-		public async Task<IActionResult> Update(long playerID, [FromBody] Player player)
+		[HttpPut("{osuPlayerID:long}")]
+		public async Task<IActionResult> Update(long osuPlayerID, [FromBody] Player player)
 		{
 			if (player == null)
 			{
 				return BadRequest("Provided player data is null.");
 			}
 
-			if (playerID != player.PlayerId)
+			if (osuPlayerID != player.OsuPlayerId)
 			{
 				return BadRequest("The playerID in the URL must match the playerID in the provided data.");
 			}
@@ -97,12 +97,12 @@ namespace TRT2API.Controllers
 			}
 		}
 		
-		[HttpPut("{playerID:long}/incrementwins")]
-		public async Task<IActionResult> AddWin(long playerID)
+		[HttpPut("{osuPlayerId:long}/incrementwins")]
+		public async Task<IActionResult> AddWin(long osuPlayerId)
 		{
 			try
 			{
-				await _dataWorker.Players.IncrementWinsAsync(playerID);
+				await _dataWorker.Players.IncrementWinsAsync(osuPlayerId);
 				return NoContent(); // HTTP 204 - success, but no content to return
 			}
 			catch (Exception ex)

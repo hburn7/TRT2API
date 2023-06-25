@@ -37,8 +37,8 @@ public class PlayerRepository : IPlayerRepository
 	public async Task<Player> AddAsync(Player player)
 	{
 		const string sql = @"
-            INSERT INTO players(playerid, name, totalmatches, totalwins, status, iseliminated, seeding)
-            VALUES(@PlayerId, @PlayerName, @TotalWins, @TotalLosses, @Status, @IsEliminated, @Seeding)
+            INSERT INTO players(osuplayerid, name, totalmatches, totalwins, status, iseliminated, seeding)
+            VALUES(@OsuPlayerId, @PlayerName, @TotalWins, @TotalLosses, @Status, @IsEliminated, @Seeding)
             RETURNING *;";
 
 		try
@@ -57,7 +57,7 @@ public class PlayerRepository : IPlayerRepository
 	{
 		const string sql = @"
             UPDATE players SET 
-            playerid = @PlayerId, 
+            osuplayerid = @OsuPlayerId, 
             name = @PlayerName, 
             totalmatches = @TotalWins, 
             totalwins = @TotalLosses, 
@@ -79,14 +79,14 @@ public class PlayerRepository : IPlayerRepository
 		}
 	}
 
-	public async Task<Player> DeleteAsync(Player player)
+	public async Task<Player> DeleteAsync(long osuPlayerId)
 	{
-		const string sql = "DELETE FROM players WHERE id = @Id RETURNING *;";
+		const string sql = "DELETE FROM players WHERE osuplayerid = @OsuPlayerId RETURNING *;";
 
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleAsync<Player>(sql, new { player.Id });
+			return await connection.QuerySingleAsync<Player>(sql, new { OsuPlayerId = osuPlayerId });
 		}
 		catch (Exception ex)
 		{
@@ -97,7 +97,7 @@ public class PlayerRepository : IPlayerRepository
 
 	public async Task<Player> GetByPlayerIdAsync(long playerId)
 	{
-		const string sql = "SELECT * FROM players WHERE playerid = @PlayerId;";
+		const string sql = "SELECT * FROM players WHERE osuplayerid = @PlayerId;";
 
 		try
 		{
@@ -132,22 +132,22 @@ public class PlayerRepository : IPlayerRepository
 		}
 	}
 
-	public async Task<Player> IncrementWinsAsync(long playerId)
+	public async Task<Player> IncrementWinsAsync(long osuPlayerId)
 	{
 		const string sql = @"
 			UPDATE players SET 
 			totalwins = totalwins + 1
-			WHERE playerid = @PlayerId
+			WHERE osuplayerid = @OsuPlayerId
 			RETURNING *;";
 
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleAsync<Player>(sql, new { PlayerId = playerId });
+			return await connection.QuerySingleAsync<Player>(sql, new { OsuPlayerId = osuPlayerId });
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error incrementing wins for player {playerId}");
+			_logger.LogError(ex, $"Error incrementing wins for player {osuPlayerId}");
 			throw;
 		}
 	}

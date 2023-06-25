@@ -2,7 +2,7 @@ CREATE TABLE players
 (
     id           SERIAL
         PRIMARY KEY,
-    playerid     BIGINT
+    osuplayerid     BIGINT
         UNIQUE,
     name         VARCHAR(100),
     totalmatches INTEGER,
@@ -16,7 +16,7 @@ CREATE TABLE matches
 (
     id             SERIAL
         PRIMARY KEY,
-    matchid        BIGINT,
+    osumatchid        BIGINT,
     winnerid       BIGINT,
     timestart      TIMESTAMP,
     lastupdated    TIMESTAMP,
@@ -54,7 +54,7 @@ CREATE TABLE maps
 (
     id        SERIAL
         PRIMARY KEY,
-    mapid     BIGINT           NOT NULL
+    osumapid     BIGINT           NOT NULL
         UNIQUE,
     round     TEXT             NOT NULL,
     mod       TEXT             NOT NULL,

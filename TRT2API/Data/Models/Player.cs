@@ -3,7 +3,7 @@
 public class Player
 {
 	public int Id { get; set; }
-	public long PlayerId { get; set; }
+	public long OsuPlayerId { get; set; }
 	public string Name { get; set; } = string.Empty;
 	public int TotalMatches { get; set; }
 	public int TotalWins { get; set; }

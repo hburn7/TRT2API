@@ -79,14 +79,14 @@ public class ScheduleRepository : IScheduleRepository
 		}
 	}
 
-	public async Task<Schedule> DeleteAsync(Schedule schedule)
+	public async Task DeleteAsync(int id)
 	{
 		const string sql = "DELETE FROM schedule WHERE id = @Id RETURNING *;";
 
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleAsync<Schedule>(sql, new { schedule.Id });
+			await connection.QueryAsync(sql, new { Id = id });
 		}
 		catch (Exception ex)
 		{

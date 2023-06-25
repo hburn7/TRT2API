@@ -131,7 +131,7 @@ public class MatchRepository : IMatchRepository
 		}
 	}
 
-	public async Task<Match> GetByMatchIdAsync(long matchId)
+	public async Task<Match> GetByOsuMatchIdAsync(long matchId)
 	{
 		const string sql = "SELECT * FROM matches WHERE matchid = @MatchId";
 
@@ -168,18 +168,18 @@ public class MatchRepository : IMatchRepository
 		}
 	}
 
-	public Task<Match?> GetAsync(int id)
+	public async Task<Match?> GetAsync(int id)
 	{
 		const string sql = "SELECT * FROM matches WHERE id = @Id";
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return connection.QuerySingleAsync<Match?>(sql, new { Id = id });
+			return await connection.QuerySingleAsync<Match?>(sql, new { Id = id });
 		}
 		catch (Exception e)
 		{
 			_logger.LogError(e, $"Error getting match with id {id}");
-			return Task.FromException<Match?>(e);
+			return await Task.FromException<Match?>(e);
 		}
 	}
 }

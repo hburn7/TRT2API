@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Npgsql;
 using TRT2API.Data.Models;
@@ -37,8 +39,8 @@ public class MapRepository : IMapRepository
 	public async Task<Map> AddAsync(Map map)
 	{
 		const string sql = @"
-            INSERT INTO maps (mapid, round, mod, postmodsr, metadata)
-            VALUES (@MapId, @Round, @Mod, @PostModSr, @Metadata)
+            INSERT INTO maps (osumapid, round, mod, postmodsr, metadata)
+            VALUES (@OsuMapId, @Round, @Mod, @PostModSr, @Metadata)
             RETURNING id;";
 
 		try
@@ -58,12 +60,12 @@ public class MapRepository : IMapRepository
 	{
 		const string sql = @"
             UPDATE maps
-            SET mapid = @MapId, 
+            SET osumapid = @osumapid, 
                 round = @Round, 
                 mod = @Mod, 
                 postmodsr = @PostModSr, 
                 metadata = @Metadata
-            WHERE mapid = @MapId;";
+            WHERE id = @Id;";
 
 		try
 		{
@@ -74,52 +76,52 @@ public class MapRepository : IMapRepository
 				return map;
 			}
 
-			throw new Exception($"No map found with mapId {map.MapId} to update.");
+			throw new Exception($"No map found with mapId {map.OsuMapId} to update.");
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error updating map {map.MapId}");
+			_logger.LogError(ex, $"Error updating map {map.OsuMapId}");
 			throw;
 		}
 	}
 
-	public async Task<Map> DeleteAsync(Map map)
+	public async Task DeleteAsync(long osuMapId)
 	{
-		const string sql = "DELETE FROM maps WHERE mapid = @MapId;";
+		const string sql = "DELETE FROM maps WHERE osumapid = @OsuMapId;";
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
 			int affectedRows = await connection.ExecuteAsync(sql, new
 			{
-				map.MapId
+				OsuMapId = osuMapId
 			});
 
 			if (affectedRows > 0)
 			{
-				return map;
+				return;
 			}
 
-			throw new Exception($"No map found with id {map.Id} to delete.");
+			throw new Exception($"No map found with osumapid {osuMapId} to delete.");
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error deleting map {map.Id}");
+			_logger.LogError(ex, $"Error deleting map with osumapid {osuMapId}");
 			throw;
 		}
 	}
 
-	public async Task<Map> GetByMapIdAsync(long mapId)
+	public async Task<Map> GetByOsuMapIdAsync(long osuMapId)
 	{
-		const string sql = "SELECT * FROM maps WHERE mapid = @MapId";
+		const string sql = "SELECT * FROM maps WHERE osumapid = @OsuMapId";
 
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleAsync<Map>(sql, new { MapId = mapId });
+			return await connection.QuerySingleAsync<Map>(sql, new { OsuMapId = osuMapId });
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error getting map with id {mapId}");
+			_logger.LogError(ex, $"Error getting map with id {osuMapId}");
 			throw;
 		}
 	}

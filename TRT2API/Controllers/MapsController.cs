@@ -28,10 +28,10 @@ public class MapsController : ControllerBase
 		return maps;
 	}
 
-	[HttpGet("{mapId:long}")]
-	public async Task<ActionResult<Map>> Get(long mapId)
+	[HttpGet("{osuMapId:long}")]
+	public async Task<ActionResult<Map>> Get(long osuMapId)
 	{
-		var map = await _dataWorker.Maps.GetByMapIdAsync(mapId);
+		var map = await _dataWorker.Maps.GetByOsuMapIdAsync(osuMapId);
 		if (map == null)
 		{
 			return NotFound("No map exists with the provided mapId.");
@@ -61,15 +61,15 @@ public class MapsController : ControllerBase
 		return Ok(map);
 	}
 
-	[HttpPut("{mapId:long}")]
-	public async Task<IActionResult> Update(long mapId, [FromBody] Map map)
+	[HttpPut("{osuMapId:long}")]
+	public async Task<IActionResult> Update(long osuMapId, [FromBody] Map map)
 	{
 		if (map == null)
 		{
 			return BadRequest("Provided map data is null.");
 		}
 
-		if (mapId != map.MapId)
+		if (osuMapId != map.OsuMapId)
 		{
 			return BadRequest("The mapId in the URL must match the mapId in the provided data.");
 		}
@@ -87,10 +87,10 @@ public class MapsController : ControllerBase
 		return NoContent(); // HTTP 204 - success, but no content to return
 	}
 
-	[HttpDelete("{mapId:long}")]
-	public async Task<IActionResult> Delete(long mapId)
+	[HttpDelete("{osuMapId:long}")]
+	public async Task<IActionResult> Delete(long osuMapId)
 	{
-		var map = await _dataWorker.Maps.GetByMapIdAsync(mapId);
+		var map = await _dataWorker.Maps.GetByOsuMapIdAsync(osuMapId);
 		if (map == null)
 		{
 			return NotFound("No map exists with the provided mapId.");
@@ -98,7 +98,7 @@ public class MapsController : ControllerBase
 
 		try
 		{
-			await _dataWorker.Maps.DeleteAsync(map);
+			await _dataWorker.Maps.DeleteAsync(osuMapId);
 		}
 		catch (Exception ex)
 		{
