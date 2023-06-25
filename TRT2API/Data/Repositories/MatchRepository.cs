@@ -110,7 +110,7 @@ public class MatchRepository : IMatchRepository
 		}
 	}
 
-	public async Task<List<Match>> GetByPlayerIdAsync(long playerId)
+	public async Task<List<Match>> GetByPlayerIdAsync(int playerId)
 	{
 		const string sql = @"
         SELECT m.* 
@@ -147,26 +147,26 @@ public class MatchRepository : IMatchRepository
 		}
 	}
 
-	public async Task<List<Player>> GetPlayersForMatchIdAsync(long matchId)
-	{
-		const string sql = @"
-        SELECT P.* 
-        FROM players P 
-        INNER JOIN match_players MP ON P.id = MP.playerid 
-        WHERE MP.matchid = @MatchId";
-
-		try
-		{
-			using var connection = new NpgsqlConnection(_connectionString);
-			var players = await connection.QueryAsync<Player>(sql, new { MatchId = matchId });
-			return players.ToList();
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex, $"Error getting players for match id {matchId}");
-			throw;
-		}
-	}
+	// public async Task<List<Player>> GetPlayersForMatchIdAsync(long matchId)
+	// {
+	// 	const string sql = @"
+ //        SELECT P.* 
+ //        FROM players P 
+ //        INNER JOIN match_players MP ON P.id = MP.playerid 
+ //        WHERE MP.matchid = @MatchId";
+ //
+	// 	try
+	// 	{
+	// 		using var connection = new NpgsqlConnection(_connectionString);
+	// 		var players = await connection.QueryAsync<Player>(sql, new { MatchId = matchId });
+	// 		return players.ToList();
+	// 	}
+	// 	catch (Exception ex)
+	// 	{
+	// 		_logger.LogError(ex, $"Error getting players for match id {matchId}");
+	// 		throw;
+	// 	}
+	// }
 
 	public async Task<Match?> GetAsync(int id)
 	{

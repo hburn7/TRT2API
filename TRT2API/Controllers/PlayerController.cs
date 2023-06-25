@@ -40,13 +40,13 @@ namespace TRT2API.Controllers
 			return player;
 		}
 
-		[HttpGet("{osuPlayerId:long}/matches")]
-		public async Task<ActionResult<List<Match>>> Matches(long osuPlayerId)
+		[HttpGet("{playerId:long}/matches")]
+		public async Task<ActionResult<List<Match>>> Matches(int playerId)
 		{
-			var matches = await _dataWorker.Matches.GetByPlayerIdAsync(osuPlayerId);
+			var matches = await _dataWorker.Matches.GetByPlayerIdAsync(playerId);
 			if (!matches.Any())
 			{
-				return NotFound("No matches found for the provided playerID.");
+				return NotFound("No matches found for the provided playerId.");
 			}
 
 			return matches;

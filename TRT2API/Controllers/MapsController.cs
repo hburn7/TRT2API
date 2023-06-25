@@ -45,7 +45,7 @@ public class MapsController : ControllerBase
 	{
 		if (map == null)
 		{
-			return BadRequest("Provided map data is null.");
+			return BadRequest("Provided map data is null or improperly formatted.");
 		}
 
 		try
@@ -76,7 +76,11 @@ public class MapsController : ControllerBase
 
 		try
 		{
-			await _dataWorker.Maps.UpdateAsync(map);
+			var res = await _dataWorker.Maps.UpdateAsync(map);
+			if (res == null)
+			{
+				return BadRequest($"The map you are trying to update does not exist (osuMapId: {osuMapId})");
+			}
 		}
 		catch (Exception ex)
 		{

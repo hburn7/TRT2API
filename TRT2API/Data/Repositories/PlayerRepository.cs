@@ -38,7 +38,7 @@ public class PlayerRepository : IPlayerRepository
 	{
 		const string sql = @"
             INSERT INTO players(osuplayerid, name, totalmatches, totalwins, status, iseliminated, seeding)
-            VALUES(@OsuPlayerId, @PlayerName, @TotalWins, @TotalLosses, @Status, @IsEliminated, @Seeding)
+            VALUES(@OsuPlayerId, @Name, @TotalMatches, @TotalWins, @Status, @IsEliminated, @Seeding)
             RETURNING *;";
 
 		try
@@ -58,9 +58,9 @@ public class PlayerRepository : IPlayerRepository
 		const string sql = @"
             UPDATE players SET 
             osuplayerid = @OsuPlayerId, 
-            name = @PlayerName, 
-            totalmatches = @TotalWins, 
-            totalwins = @TotalLosses, 
+            name = @Name, 
+            totalmatches = @TotalMatches, 
+            totalwins = @TotalWins, 
             status = @Status, 
             iseliminated = @IsEliminated, 
             seeding = @Seeding 

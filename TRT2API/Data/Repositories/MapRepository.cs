@@ -76,7 +76,8 @@ public class MapRepository : IMapRepository
 				return map;
 			}
 
-			throw new Exception($"No map found with mapId {map.OsuMapId} to update.");
+			_logger.LogWarning($"No map found with osumapid {map.OsuMapId} to update");
+			return null;
 		}
 		catch (Exception ex)
 		{
