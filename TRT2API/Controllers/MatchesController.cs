@@ -74,7 +74,7 @@ namespace TRT2API.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting match by id");
-                return NotFound("Match not found or error occurred.");
+                return StatusCode(500, "Match not found or error occurred.");
             }
         }
         
