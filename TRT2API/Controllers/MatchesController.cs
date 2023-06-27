@@ -27,9 +27,9 @@ namespace TRT2API.Controllers
         public async Task<ActionResult<List<MatchData>>> All()
         {
             var matches = await _dataWorker.Matches.GetAllAsync();
-            if (!matches.Any())
+            if (!matches?.Any() ?? true)
             {
-                return BadRequest("No matches exist.");
+                return NotFound("No matches exist.");
             }
 
             var matchDataList = new List<MatchData>();
