@@ -81,21 +81,30 @@ namespace TRT2API.Controllers
         [HttpGet("osumatch/{osuMatchId:long}")]
         public async Task<ActionResult<MatchData>> GetByOsuMatchId(long osuMatchId)
         {
-            var match = await _dataWorker.Matches.GetByOsuMatchIdAsync(osuMatchId);
-            if(match == null)
+            try
             {
-                return NotFound("No such match exists.");
+                var match = await _dataWorker.Matches.GetByOsuMatchIdAsync(osuMatchId);
+                if(match == null)
+                {
+                    return NotFound("No such match exists.");
+                }
+
+                var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(match.Id);
+                var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(match.Id);
+
+                return new MatchData
+                {
+                    Match = match,
+                    MatchPlayers = matchPlayers,
+                    MatchMaps = matchMaps
+                };
             }
-
-            var matchPlayers = await _dataWorker.MatchPlayers.GetByMatchIdAsync(match.Id);
-            var matchMaps = await _dataWorker.MatchMaps.GetByMatchIdAsync(match.Id);
-
-            return new MatchData
+            catch (Exception e)
             {
-                Match = match,
-                MatchPlayers = matchPlayers,
-                MatchMaps = matchMaps
-            };
+                _logger.LogError($"Error getting match by osu match id: {osuMatchId}", e);
+                return StatusCode(500, $"Error getting match by osu match id: {osuMatchId}");
+            }
+            
         }
 
         [HttpPost("add")]
@@ -127,7 +136,7 @@ namespace TRT2API.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest("Unable to add the match. " + e.Message);
+                return StatusCode(500, "Unable to add the match due to error: " + e.Message);
             }
 
             return NoContent(); // HTTP 204 - success, but no content to return
