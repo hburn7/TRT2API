@@ -95,7 +95,7 @@ public class PlayerRepository : IPlayerRepository
 		}
 	}
 
-	public async Task<Player> GetByPlayerIdAsync(long playerId)
+	public async Task<Player> GetByOsuPlayerIdAsync(long playerId)
 	{
 		const string sql = "SELECT * FROM players WHERE osuplayerid = @PlayerId;";
 

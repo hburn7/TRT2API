@@ -31,7 +31,7 @@ namespace TRT2API.Controllers
 		[HttpGet("{osuPlayerId:long}")]
 		public async Task<ActionResult<Player>> Get(long osuPlayerId)
 		{
-			var player = await _dataWorker.Players.GetByPlayerIdAsync(osuPlayerId);
+			var player = await _dataWorker.Players.GetByOsuPlayerIdAsync(osuPlayerId);
 			if (player == null)
 			{
 				return NotFound("No player exists for the provided ID.");
