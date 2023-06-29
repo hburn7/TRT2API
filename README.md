@@ -191,3 +191,9 @@ All responses are provided in JSON format.
     "orderInMatch": 0
   }
   ```
+
+**Misc Notes:**
+- When getting a match, the `matchPlayers` field's `score` property will be:
+  - For Battle Royale: The numeric score the player achieved for a specific map.
+  - For 1v1 & Main Tournament: The number of maps won by the player in the osu! match.
+- Each map played in a Battle Royale match is counted as a `match`.
