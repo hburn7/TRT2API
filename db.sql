@@ -82,5 +82,6 @@ create table rounds
     id     SERIAL
         PRIMARY KEY,
     name   VARCHAR(20) NOT NULL,
-    bestof INTEGER     NOT NULL
+    bestof INTEGER     NOT NULL,
+    iswinnersbracket   BOOLEAN
 );

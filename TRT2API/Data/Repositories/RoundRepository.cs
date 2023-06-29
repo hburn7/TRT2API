@@ -33,13 +33,13 @@ public class RoundRepository : IRoundRepository
 		}
 	}
 
-	public async Task<Round?> GetAsync(string name)
+	public async Task<List<Round>?> GetAsync(string name)
 	{
 		try
 		{
 			const string sql = "SELECT * FROM rounds WHERE name = @Name;";
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleAsync<Round?>(sql, new {Name = name});
+			return (await connection.QueryAsync<Round>(sql, new {Name = name})).ToList();
 		}
 		catch (Exception e)
 		{

@@ -37,7 +37,7 @@ public class RoundsController : Controller
 	}
 
 	[HttpGet("{name}")]
-	public async Task<ActionResult<Round?>> Get(string name)
+	public async Task<ActionResult<List<Round>?>> Get(string name)
 	{
 		try
 		{
