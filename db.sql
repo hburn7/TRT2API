@@ -22,7 +22,8 @@ CREATE TABLE matches
     lastupdated    TIMESTAMP,
     type           VARCHAR(50),
     scheduleid     INTEGER,
-    bracketmatchid INTEGER
+    bracketmatchid INTEGER,
+    roundid        INTEGER
 );
 
 CREATE TABLE match_players

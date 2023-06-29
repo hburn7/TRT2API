@@ -10,4 +10,5 @@ public class Match
 	public DateTime? TimeStart { get; set; }
 	public DateTime? LastUpdated { get; set; }
 	public int? BracketMatchId { get; set; }
+	public int? RoundId { get; set; }
 }

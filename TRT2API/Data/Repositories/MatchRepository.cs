@@ -37,8 +37,8 @@ public class MatchRepository : IMatchRepository
 	public async Task<Match> AddAsync(Match match)
 	{
 		const string sql = @"
-            INSERT INTO matches (osumatchid, type, scheduleid, winnerid, timestart, lastupdated, bracketmatchid)
-            VALUES (@OsuMatchId, @Type, @ScheduleId, @WinnerId, @TimeStart, @LastUpdated, @BracketMatchId)
+            INSERT INTO matches (osumatchid, type, scheduleid, winnerid, timestart, lastupdated, bracketmatchid, roundid)
+            VALUES (@OsuMatchId, @Type, @ScheduleId, @WinnerId, @TimeStart, @LastUpdated, @BracketMatchId, @RoundId)
             RETURNING id;";
 
 		try
@@ -64,7 +64,8 @@ public class MatchRepository : IMatchRepository
                 winnerid = @WinnerId,
                 timestart = @TimeStart, 
                 lastupdated = @LastUpdated,
-                bracketmatchid = @BracketMatchId
+                bracketmatchid = @BracketMatchId,
+                roundid = @RoundId
             WHERE id = @Id;";
 
 		try
