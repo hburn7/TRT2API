@@ -38,7 +38,7 @@ All responses are provided in JSON format.
 
 - **Get Player by ID:** `GET /api/players/{playerId:int}`
 
-    - Returns a specific player by their Id. If no player exists with the provided Id, a 404 error is returned.
+  - Returns a specific player by their Id. If no player exists with the provided Id, a 404 error is returned.
 
 - **Update Player:** `PUT /api/players/{osuPlayerId:long}`
 
@@ -46,21 +46,22 @@ All responses are provided in JSON format.
 
 - **Add Player:** `POST /api/players/add`
 
-    - Adds a new player to the database. If the request is malformed, a 400 error is returned. If the request is unable to be processed, a 409 error is returned.
+  - Adds a new player to the database. If the request is malformed, a 400 error is returned. If the request is unable to be processed, a 409 error is returned.
 
-    Post body:
-    ```json
-    {
-        "id": 0,
-        "osuPlayerId": 0,
-        "name": "string",
-        "totalMatches": 0,
-        "totalWins": 0,
-        "status": "string",
-        "isEliminated": true,
-        "seeding": 0
-    }
-    ```
+  Post body:
+
+  ```json
+  {
+    "id": 0,
+    "osuPlayerId": 0,
+    "name": "string",
+    "totalMatches": 0,
+    "totalWins": 0,
+    "status": "string",
+    "isEliminated": true,
+    "seeding": 0
+  }
+  ```
 
 ## Matches Endpoints
 
@@ -71,6 +72,48 @@ All responses are provided in JSON format.
 - **Get Match by ID:** `GET /api/matches/{id:int}`
 
   - Returns a specific match by its Id. If no match exists with the provided Id, a 404 error is returned. Returns status code 500 if another error occurs. Note: This is not the osu! match Id.
+
+  Response body:
+
+  ```json
+  {
+    "match": {
+      "id": 2,
+      "osuMatchId": null,
+      "type": "battle_royale",
+      "scheduleId": 0,
+      "winnerId": 3,
+      "timeStart": "2023-07-08T22:05:00",
+      "lastUpdated": "2023-07-08T22:05:00",
+      "bracketMatchId": null,
+      "roundId": null
+    },
+    "matchPlayers": [
+      {
+        "id": 3,
+        "matchId": 2,
+        "playerId": 2,
+        "score": 835433
+      },
+      {
+        "id": 4,
+        "matchId": 2,
+        "playerId": 3,
+        "score": 732681
+      }
+    ],
+    "matchMaps": [
+      {
+        "id": 8,
+        "matchId": 2,
+        "playerId": 3,
+        "mapId": 5,
+        "action": "picked",
+        "orderInMatch": 69
+      }
+    ]
+  }
+  ```
 
 - **Get by osu! Match ID:** `GET /api/matches/osumatch/{osuMatchId:long}`
 
@@ -85,22 +128,24 @@ All responses are provided in JSON format.
   - Updates an existing match's data in the database. If the match does not exist, a 404 error is returned. -->
 
 - **Add Match:** `POST /api/matches/add`
+
   - Adds a new match to the database. If the request cannot be parsed correctly, a 400 error is returned. If any other issue occurs, status code 500 is returned.
 
   Post body: (TODO: Fix posting format)
+
   ```json
-    {
-        "match": {
-            "id": 0,
-            "osuMatchId": 0,
-            "type": "string",
-            "scheduleId": 0,
-            "winnerId": 0,
-            "timeStart": "2023-06-27T13:21:29.196Z",
-            "lastUpdated": "2023-06-27T13:21:29.196Z",
-            "bracketMatchId": 0
-        }
+  {
+    "match": {
+      "id": 0,
+      "osuMatchId": 0,
+      "type": "string",
+      "scheduleId": 0,
+      "winnerId": 0,
+      "timeStart": "2023-06-27T13:21:29.196Z",
+      "lastUpdated": "2023-06-27T13:21:29.196Z",
+      "bracketMatchId": 0
     }
+  }
   ```
 
 ## Schedules Endpoints
@@ -180,7 +225,7 @@ All responses are provided in JSON format.
 
 - **Add Log:** `POST /api/matchlog/add`
   - Adds a new matchlog entry. Returns error 400 if the request is malformed.
-  Post body:
+    Post body:
   ```json
   {
     "id": 0,
@@ -193,6 +238,7 @@ All responses are provided in JSON format.
   ```
 
 **Misc Notes:**
+
 - When getting a match, the `matchPlayers` field's `score` property will be:
   - For Battle Royale: The numeric score the player achieved for a specific map.
   - For 1v1 & Main Tournament: The number of maps won by the player in the osu! match.
