@@ -131,7 +131,7 @@ All responses are provided in JSON format.
 
   - Adds a new match to the database. If the request cannot be parsed correctly, a 400 error is returned. If any other issue occurs, status code 500 is returned.
 
-  Post body: (TODO: Fix posting format)
+  Post body: _Note, there are multiple ways to add matches._
 
   ```json
   {
@@ -147,6 +147,44 @@ All responses are provided in JSON format.
     }
   }
   ```
+
+  _Or_
+
+  ```json
+  {
+    "match": {
+      "id": 0,
+      "osuMatchId": 0,
+      "type": "string",
+      "scheduleId": 0,
+      "winnerId": 0,
+      "timeStart": "2023-07-02T16:13:12.646Z",
+      "lastUpdated": "2023-07-02T16:13:12.646Z",
+      "bracketMatchId": 0,
+      "roundId": 0
+    },
+    "matchPlayers": [
+      {
+        "id": 0,
+        "matchId": 0,
+        "playerId": 0,
+        "score": 0
+      }
+    ],
+    "matchMaps": [
+      {
+        "id": 0,
+        "matchId": 0,
+        "playerId": 0,
+        "mapId": 0,
+        "action": "string",
+        "orderInMatch": 0
+      }
+    ]
+  }
+  ```
+
+  *Note: matchPlayers and matchMaps objects are restricted by foreign keys. All corresponding Ids must already be present in the appropriate tables. These are database keys, NOT osu! Ids.
 
 ## Schedules Endpoints
 

@@ -108,7 +108,7 @@ namespace TRT2API.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] MatchData matchData)
+        public async Task<IActionResult> AddMatchData([FromBody] MatchData matchData)
         {
             if (matchData == null || matchData.Match == null)
             {
@@ -117,21 +117,36 @@ namespace TRT2API.Controllers
 
             try
             {
+                if (matchData.Match == null)
+                {
+                    return BadRequest("Could not parse a match object from the provided data.");
+                }
                 // Add the Match
                 var addedMatch = await _dataWorker.Matches.AddAsync(matchData.Match);
 
-                // Add the MatchPlayers
-                foreach (var matchPlayer in matchData.MatchPlayers)
+                if (addedMatch == null)
                 {
-                    matchPlayer.MatchId = addedMatch.Id;
-                    await _dataWorker.MatchPlayers.AddAsync(matchPlayer);
+                    return BadRequest("An error occurred while adding the match.");
                 }
 
-                // Add the MatchMaps
-                foreach (var matchMap in matchData.MatchMaps)
+                if (matchData.MatchPlayers != null)
                 {
-                    matchMap.MatchId = addedMatch.Id;
-                    await _dataWorker.MatchMaps.AddAsync(matchMap);
+                    // Add the MatchPlayers
+                    foreach (var matchPlayer in matchData.MatchPlayers)
+                    {
+                        matchPlayer.MatchId = addedMatch.Id;
+                        await _dataWorker.MatchPlayers.AddAsync(matchPlayer);
+                    }
+                }
+
+                if (matchData.MatchMaps != null)
+                {
+                    // Add the MatchMaps
+                    foreach (var matchMap in matchData.MatchMaps)
+                    {
+                        matchMap.MatchId = addedMatch.Id;
+                        await _dataWorker.MatchMaps.AddAsync(matchMap);
+                    }
                 }
             }
             catch (Exception e)
