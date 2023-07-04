@@ -106,6 +106,26 @@ namespace TRT2API.Controllers
             }
             
         }
+        
+        [HttpGet("{matchId:int}/players")]
+        public async Task<ActionResult<List<Player>>> GetPlayersForMatchId(int matchId)
+        {
+            try
+            {
+                var matchPlayers = await _dataWorker.Players.GetByMatchIdAsync(matchId);
+                if(matchPlayers == null)
+                {
+                    return NotFound("No such match exists.");
+                }
+
+                return matchPlayers;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error getting players for match id: {matchId}", e);
+                return StatusCode(500, $"Error getting players for match id: {matchId}");
+            }
+        }
 
         [HttpPost("add")]
         public async Task<IActionResult> AddMatchData([FromBody] MatchData matchData)
@@ -155,6 +175,31 @@ namespace TRT2API.Controllers
             }
 
             return NoContent(); // HTTP 204 - success, but no content to return
+        }
+
+        [HttpPut("update/{id:int}")]
+        public async Task<IActionResult> UpdateMatch(int id, [FromBody] Match match)
+        {
+            try
+            {
+                if (id != match.Id)
+                {
+                    return BadRequest("The provided match id does not match the match id in the provided match object.");
+                }
+                
+                var existingMatch = await _dataWorker.Matches.GetAsync(id);
+                if (existingMatch == null)
+                {
+                    return NotFound("No match exists in the database with the provided id.");
+                }
+                
+                await _dataWorker.Matches.UpdateAsync(match);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Unable to update the match due to error: " + e.Message);
+            }
         }
     }
 }

@@ -72,15 +72,15 @@ namespace TRT2API.Controllers
 			}
 		}
 
-		[HttpPut("{osuPlayerID:long}")]
-		public async Task<IActionResult> Update(long osuPlayerID, [FromBody] Player player)
+		[HttpPut("{osuPlayerId:long}")]
+		public async Task<IActionResult> Update(long osuPlayerId, [FromBody] Player player)
 		{
 			if (player == null)
 			{
 				return BadRequest("Provided player data is null.");
 			}
 
-			if (osuPlayerID != player.OsuPlayerId)
+			if (osuPlayerId != player.OsuPlayerId)
 			{
 				return BadRequest("The playerID in the URL must match the playerID in the provided data.");
 			}

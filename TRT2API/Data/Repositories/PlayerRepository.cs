@@ -95,23 +95,23 @@ public class PlayerRepository : IPlayerRepository
 		}
 	}
 
-	public async Task<Player> GetByOsuPlayerIdAsync(long playerId)
+	public async Task<Player> GetByOsuPlayerIdAsync(long osuPlayerId)
 	{
 		const string sql = "SELECT * FROM players WHERE osuplayerid = @PlayerId;";
 
 		try
 		{
 			using var connection = new NpgsqlConnection(_connectionString);
-			return await connection.QuerySingleOrDefaultAsync<Player>(sql, new { PlayerId = playerId });
+			return await connection.QuerySingleOrDefaultAsync<Player>(sql, new { PlayerId = osuPlayerId });
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error getting player with id {playerId}");
+			_logger.LogError(ex, $"Error getting player with id {osuPlayerId}");
 			throw;
 		}
 	}
 
-	public async Task<List<Player>> GetByMatchIdAsync(long matchId)
+	public async Task<List<Player>> GetByMatchIdAsync(int matchId)
 	{
 		const string sql = @"
             SELECT p.*

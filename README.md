@@ -28,17 +28,13 @@ All responses are provided in JSON format.
 
   - Returns all players in the database. If no players exist, a 404 error is returned.
 
-- **Get Player by osu! ID:** `GET /api/players/{osuPlayerId:long}`
+- **Get Player by osu! Id:** `GET /api/players/{osuPlayerId:long}`
 
   - Returns a specific player by their osu! Id. If no player exists with the provided Id, a 404 error is returned.
 
-- **Get Player Matches by osu! ID:** `GET /api/players/{osuPlayerId:long}/matches`
+- **Get Player Matches by osu! Id:** `GET /api/players/{playerId:int}/matches`
 
-  - Returns all matches a specific player has participated in by their osu! Id. If no matches exist for the player, a 404 error is returned.
-
-- **Get Player by ID:** `GET /api/players/{playerId:int}`
-
-  - Returns a specific player by their Id. If no player exists with the provided Id, a 404 error is returned.
+  - Returns all matches a specific player has participated in by their Id. If no matches exist for the player, a 404 error is returned.
 
 - **Update Player:** `PUT /api/players/{osuPlayerId:long}`
 
@@ -63,13 +59,17 @@ All responses are provided in JSON format.
   }
   ```
 
+- **Increment Wins:** `PUT /api/players/{osuPlayerId:long}/wins`
+
+  - Increments the total wins of a player by 1. Returns 400 or 500 upon error.
+
 ## Matches Endpoints
 
 - **Get All Matches:** `GET /api/matches/all`
 
   - Returns all matches in the database. If no matches exist, a 404 error is returned.
 
-- **Get Match by ID:** `GET /api/matches/{id:int}`
+- **Get Match by Id:** `GET /api/matches/{id:int}`
 
   - Returns a specific match by its Id. If no match exists with the provided Id, a 404 error is returned. Returns status code 500 if another error occurs. Note: This is not the osu! match Id.
 
@@ -115,17 +115,17 @@ All responses are provided in JSON format.
   }
   ```
 
-- **Get by osu! Match ID:** `GET /api/matches/osumatch/{osuMatchId:long}`
+- **Get by osu! Match Id:** `GET /api/matches/osumatch/{osuMatchId:long}`
 
   - Returns a specific match by its osu! match Id. If no match exists with the provided osu! match Id, a 404 error is returned. Returns status code 500 if another error occurs.
 
-- **Get Players in Match:** `GET /api/matches/{matchID:long}/players`
+- **Get Players in Match:** `GET /api/matches/{matchId:int}/players`
 
   - Returns all players that participated in a specific match. If there are no players for the match or the match could not be found, a 404 error is returned.
 
-<!-- - **Update Match:** `PUT /api/matches/{matchID:long}`
+- **Update Match:** `PUT /api/matches/update/{matchId:int}`
 
-  - Updates an existing match's data in the database. If the match does not exist, a 404 error is returned. -->
+  - Updates an existing match's data in the database. If the match does not exist, a 404 error is returned.
 
 - **Add Match:** `POST /api/matches/add`
 
@@ -184,7 +184,7 @@ All responses are provided in JSON format.
   }
   ```
 
-  *Note: matchPlayers and matchMaps objects are restricted by foreign keys. All corresponding Ids must already be present in the appropriate tables. These are database keys, NOT osu! Ids.
+  \*Note: matchPlayers and matchMaps objects are restricted by foreign keys. All corresponding Ids must already be present in the appropriate tables. These are database keys, NOT osu! Ids.
 
 ## Schedules Endpoints
 
@@ -192,9 +192,9 @@ All responses are provided in JSON format.
 
   - Returns all schedules in the database. If no schedules exist, a 404 error is returned.
 
-- **Get Schedule by ID:** `GET /api/schedules/{id:int}`
+- **Get Schedule by Id:** `GET /api/schedules/{id:int}`
 
-  - Returns a specific schedule by its ID. If no schedule exists with the provided ID, a 404 error is returned.
+  - Returns a specific schedule by its Id. If no schedule exists with the provided Id, a 404 error is returned.
 
 - **Update Schedule:** `PUT /api/schedules/{id:int}`
 
@@ -205,7 +205,23 @@ All responses are provided in JSON format.
   - Deletes an existing schedule from the database. If there is any error, a 500 error is returned.
 
 - **Add Schedule:** `POST /api/schedules/add`
+
   - Adds a new schedule to the database. If there is any error, a 409 error is returned.
+
+  Post body:
+
+  ```json
+  {
+    "id": 0,
+    "title": "string",
+    "description": "string",
+    "type": "string",
+    "image": "string",
+    "priority": 0,
+    "link": "string",
+    "timestamp": "2023-07-04T01:59:13.050Z"
+  }
+  ```
 
 ## Maps Endpoints
 
@@ -217,7 +233,7 @@ All responses are provided in JSON format.
 
   - Returns a specific map by its osuMapId. If no map exists with the provided osuMapId, a 404 error is returned.
 
-- **Update Map:** `PUT /api/maps/{mapID:long}`
+- **Update Map:** `PUT /api/maps/{osuMapId:long}`
 
   - Updates an existing map's data in the database with what is provided in the `PUT` body. If the map does not exist, a 404 error is returned.
 
@@ -257,9 +273,9 @@ All responses are provided in JSON format.
 
   - Returns all logs in the database.
 
-- **Get Logs by Match ID:** `GET /api/matchlog/{matchID:int}`
+- **Get Logs by Match Id:** `GET /api/matchlog/{matchId:int}`
 
-  - Returns all logs for a specific match. Note: This is not the osu! match ID, but the match ID from the database.
+  - Returns all logs for a specific match. Note: This is not the osu! match Id, but the match Id from the database.
 
 - **Add Log:** `POST /api/matchlog/add`
   - Adds a new matchlog entry. Returns error 400 if the request is malformed.
