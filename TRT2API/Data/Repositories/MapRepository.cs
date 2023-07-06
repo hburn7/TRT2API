@@ -60,12 +60,11 @@ public class MapRepository : IMapRepository
 	{
 		const string sql = @"
             UPDATE maps
-            SET osumapid = @osumapid, 
-                round = @Round, 
-                mod = @Mod, 
-                postmodsr = @PostModSr, 
+            SET round = @Round, 
+                mod = @Mod,
+                postmodsr = @PostModSr,
                 metadata = @Metadata
-            WHERE id = @Id;";
+            WHERE osumapid = @OsuMapId;";
 
 		try
 		{
