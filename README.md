@@ -229,15 +229,15 @@ All responses are provided in JSON format.
 
   - Returns all maps in the database. If no maps exist, a 404 error is returned.
 
-- **Get Map by osu! Map Id:** `GET /api/maps/{osuMapId:long}`
+- **Get Map by osu! Map Id:** `GET /api/maps/{round}/{osuMapId:long}`
 
   - Returns a specific map by its osuMapId. If no map exists with the provided osuMapId, a 404 error is returned.
 
-- **Update Map:** `PUT /api/maps/{osuMapId:long}`
+- **Update Map:** `PUT /api/maps/{round}/{osuMapId:long}`
 
   - Updates an existing map's data in the database with what is provided in the `PUT` body. If the map does not exist, a 404 error is returned.
 
-- **Delete Map:** `DELETE /api/maps/{osuMapId:long}`
+- **Delete Map:** `DELETE /api/maps/{round}/{osuMapId:long}`
 
   - Deletes an existing map from the database. If the map does not exist, a 404 error is returned. If another error occurs, a 500 error is returned.
 
