@@ -93,6 +93,21 @@ namespace TRT2API.Data.Repositories
             }
         }
 
+        public Task<MatchMap> GetAsync(int id)
+        {
+            const string sql = "SELECT * FROM match_maps WHERE id = @Id;";
+            try
+            {
+                using var connection = new NpgsqlConnection(_connectionString);
+                return connection.QuerySingleAsync<MatchMap>(sql, new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting match map with id {id}");
+                throw;
+            }
+        }
+
         public async Task<List<MatchMap>> GetByMatchIdAsync(int matchId)
         {
             const string sql = "SELECT * FROM match_maps WHERE matchid = @MatchId;";
@@ -105,6 +120,21 @@ namespace TRT2API.Data.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting match map with match id {matchId}");
+                throw;
+            }
+        }
+
+        public Task DeleteAsync(int id)
+        {
+            const string sql = "DELETE FROM match_maps WHERE id = @Id;";
+            try
+            {
+                using var connection = new NpgsqlConnection(_connectionString);
+                return connection.ExecuteAsync(sql, new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting match map with id {id}");
                 throw;
             }
         }

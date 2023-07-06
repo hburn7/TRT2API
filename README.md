@@ -273,9 +273,9 @@ All responses are provided in JSON format.
 
   - Returns all logs in the database.
 
-- **Get Logs by Match Id:** `GET /api/matchlog/{matchId:int}`
+- **Get by Id:** `GET /api/matchlog/{id:int}`
 
-  - Returns all logs for a specific match. Note: This is not the osu! match Id, but the match Id from the database.
+  - Returns a single object for the id. Note: This is not the osu! match Id, but the match Id from the database.
 
 - **Add Log:** `POST /api/matchlog/add`
   - Adds a new matchlog entry. Returns error 400 if the request is malformed.
@@ -290,6 +290,45 @@ All responses are provided in JSON format.
     "orderInMatch": 0
   }
   ```
+
+- **Delete Log:** `DELETE /api/matchlog/{id:int}`
+  - Deletes a log entry. Returns error 404 if the log entry does not exist.
+
+- **Update Log:** `PUT /api/matchlog/{id:int}`
+  - Updates a log entry. Returns error 404 if the log entry does not exist or 400 if the request is malformed.
+
+## Match Players
+
+- **Get All Match Players:** `GET /api/matchplayers/all`
+
+  - Returns all match players in the database.
+
+- **Get Match Players by Id:** `GET /api/matchplayers/{id:int}`
+  
+  - Returns a specific match player by its Id. If no match player exists with the provided Id, a 404 error is returned.
+
+- **Add Match Player:** `POST /api/matchplayers/add`
+
+  - Adds a new match player to the database. If there is any error, a 409 error is returned.
+
+  Post body:
+
+  ```json
+  {
+    "id": 0,
+    "matchId": 0,
+    "playerId": 0,
+    "score": 0
+  }
+  ```
+
+- **Update Match Player:** `PUT /api/matchplayers/{id:int}`
+
+  - Updates an existing match player's data in the database. If the match player does not exist, a 404 error is returned.
+
+- **Delete Match Player:** `DELETE /api/matchplayers/{id:int}`
+
+  - Deletes an existing match player from the database. If there is any error, a 500 error is returned.
 
 **Misc Notes:**
 

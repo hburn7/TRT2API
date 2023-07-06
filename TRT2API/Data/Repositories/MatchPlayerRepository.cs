@@ -103,6 +103,37 @@ namespace TRT2API.Data.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting match player with match id {matchId}");
+                return null;
+            }
+        }
+
+        public async Task<MatchPlayer?> GetAsync(int id)
+        {
+            const string sql = "SELECT * FROM match_players WHERE id = @Id;";
+            try
+            {
+                using var connection = new NpgsqlConnection(_connectionString);
+                return await connection.QuerySingleOrDefaultAsync<MatchPlayer>(sql, new { Id = id });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting match player with id {id}");
+                return null;
+            }
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            const string sql = "DELETE FROM match_players WHERE id = @Id;";
+            
+            try
+            {
+                using var connection = new NpgsqlConnection(_connectionString);
+                await connection.ExecuteAsync(sql, new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting match player with id {id}");
                 throw;
             }
         }
