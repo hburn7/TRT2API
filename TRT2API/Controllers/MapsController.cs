@@ -28,13 +28,13 @@ public class MapsController : ControllerBase
 		return maps;
 	}
 
-	[HttpGet("{osuMapId:long}")]
-	public async Task<ActionResult<Map>> Get(long osuMapId)
+	[HttpGet("{round}/{osuMapId:long}")]
+	public async Task<ActionResult<Map>> Get(string round, long osuMapId)
 	{
-		var map = await _dataWorker.Maps.GetByOsuMapIdAsync(osuMapId);
+		var map = await _dataWorker.Maps.GetByOsuMapIdAndRoundAsync(osuMapId, round);
 		if (map == null)
 		{
-			return NotFound("No map exists with the provided mapId.");
+			return NotFound("No map exists with the provided mapId and round.");
 		}
 
 		return map;
@@ -61,17 +61,17 @@ public class MapsController : ControllerBase
 		return Ok(map);
 	}
 
-	[HttpPut("{osuMapId:long}")]
-	public async Task<IActionResult> Update(long osuMapId, [FromBody] Map map)
+	[HttpPut("{round}/{osuMapId:long}")]
+	public async Task<IActionResult> Update(string round, long osuMapId, [FromBody] Map map)
 	{
 		if (map == null)
 		{
 			return BadRequest("Provided map data is null.");
 		}
 
-		if (osuMapId != map.OsuMapId)
+		if (osuMapId != map.OsuMapId || round != map.Round)
 		{
-			return BadRequest("The mapId in the URL must match the mapId in the provided data.");
+			return BadRequest("The osuMapId in the URL must match the mapId in the provided data.");
 		}
 
 		try
@@ -91,22 +91,22 @@ public class MapsController : ControllerBase
 		return NoContent(); // HTTP 204 - success, but no content to return
 	}
 
-	[HttpDelete("{osuMapId:long}")]
-	public async Task<IActionResult> Delete(long osuMapId)
+	[HttpDelete("{round}/{osuMapId:long}")]
+	public async Task<IActionResult> Delete(string round, long osuMapId)
 	{
 		try
 		{
-			var map = await _dataWorker.Maps.GetByOsuMapIdAsync(osuMapId);
+			var map = await _dataWorker.Maps.GetByOsuMapIdAndRoundAsync(osuMapId, round);
 			if (map == null)
 			{
-				return NotFound("No map exists with the provided mapId.");
+				return NotFound("No map exists with the provided mapId and round.");
 			}
 			
-			await _dataWorker.Maps.DeleteAsync(osuMapId);
+			await _dataWorker.Maps.DeleteAsync(round, osuMapId);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, $"Error when deleting map with osuMapId {osuMapId}");
+			_logger.LogError(ex, $"Error when deleting map with osuMapId {osuMapId} for round {round}");
 			return StatusCode(500, "An error occurred while deleting the map.");
 		}
 

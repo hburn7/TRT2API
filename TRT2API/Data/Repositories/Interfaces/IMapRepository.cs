@@ -4,6 +4,6 @@ namespace TRT2API.Data.Repositories.Interfaces;
 
 public interface IMapRepository : IRepository<Map>
 {
-	Task<Map?> GetByOsuMapIdAsync(long osuMapId);
-	Task DeleteAsync(long osuMapId);
+	Task<Map?> GetByOsuMapIdAndRoundAsync(long osuMapId, string round);
+	Task DeleteAsync(string round, long osuMapId);
 }
